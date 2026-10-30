@@ -17,9 +17,11 @@ import { Dialog } from "@/components/ui/dialog";
 export function SceneObjects({
   close,
   editable,
+  compact = false,
 }: {
   close: () => void;
   editable: boolean;
+  compact?: boolean;
 }) {
   const s = useStudio(),
     [renaming, setRenaming] = useState<string | null>(null),
@@ -46,46 +48,53 @@ export function SceneObjects({
           <X />
         </Button>
       </header>
-      <div className="objects-list">
-        {s.scene?.objects.map((o) => (
-          <div
-            key={o.id}
-            className={`object-row ${o.id === s.selectedObject ? "selected" : ""}`}
-            draggable={editable}
-            onDragStart={(e) => {
-              e.dataTransfer.setData(SPATIAL_MIME, o.id);
-              e.dataTransfer.effectAllowed = "copy";
-            }}
-          >
-            <button
-              className="object-main"
-              onClick={() => s.selectObject(o.id)}
+      {!compact && (
+        <div className="objects-list">
+          {s.scene?.objects.map((o) => (
+            <div
+              key={o.id}
+              className={`object-row ${o.id === s.selectedObject ? "selected" : ""}`}
+              draggable={
+                !!s.active &&
+                s.active.type === "Custom" &&
+                !s.sceneEditing &&
+                !s.busy
+              }
+              onDragStart={(e) => {
+                e.dataTransfer.setData(SPATIAL_MIME, o.id);
+                e.dataTransfer.effectAllowed = "copy";
+              }}
             >
-              <GripVertical size={13} />
-              {o.geometry.kind === "gate" ? (
-                <ArrowRightLeft size={15} />
-              ) : (
-                <Scan size={15} />
-              )}
-              <span>{o.name}</span>
-            </button>
-            <Button
-              size="icon"
-              variant="ghost"
-              disabled={!editable}
-              aria-label={`Toggle ${o.name}`}
-              onClick={() => s.updateObject({ ...o, visible: !o.visible })}
-            >
-              {o.visible ? <Eye /> : <EyeOff />}
-            </Button>
-          </div>
-        ))}
-        {!s.scene?.objects.length && (
-          <p className="p-4 text-xs text-slate-400">
-            Draw a gate or zone to get started.
-          </p>
-        )}
-      </div>
+              <button
+                className="object-main"
+                onClick={() => s.selectObject(o.id)}
+              >
+                <GripVertical size={13} />
+                {o.geometry.kind === "gate" ? (
+                  <ArrowRightLeft size={15} />
+                ) : (
+                  <Scan size={15} />
+                )}
+                <span>{o.name}</span>
+              </button>
+              <Button
+                size="icon"
+                variant="ghost"
+                disabled={!editable}
+                aria-label={`Toggle ${o.name}`}
+                onClick={() => s.updateObject({ ...o, visible: !o.visible })}
+              >
+                {o.visible ? <Eye /> : <EyeOff />}
+              </Button>
+            </div>
+          ))}
+          {!s.scene?.objects.length && (
+            <p className="p-4 text-xs text-slate-500">
+              Draw a gate or zone to get started.
+            </p>
+          )}
+        </div>
+      )}
       {object && (
         <div className="object-details">
           <div className="flex items-center justify-between">
@@ -100,6 +109,25 @@ export function SceneObjects({
               : "Unassigned scene object"}{" "}
             · normalized coordinates
           </p>
+          {!editable && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="mb-2 w-full"
+              onClick={s.beginScene}
+            >
+              Edit geometry
+            </Button>
+          )}
+          {editable && (
+            <p className="geometry-hint">
+              Drag the{" "}
+              {object.geometry.kind === "gate"
+                ? "line or its two endpoints"
+                : "fill or its vertices"}{" "}
+              on the camera to edit.
+            </p>
+          )}
           <div className="flex gap-1 flex-wrap">
             <Button
               variant="outline"
@@ -144,7 +172,17 @@ export function SceneObjects({
             <Button
               variant="ghost"
               size="sm"
-              disabled={!editable}
+              disabled={
+                !s.active ||
+                s.active.type === "System" ||
+                s.sceneEditing ||
+                s.busy
+              }
+              title={
+                s.sceneEditing
+                  ? "Save the scene first"
+                  : "Add a spatial operator to this rule"
+              }
               onClick={() => s.spatialDrop(object.id, { x: 120, y: 120 })}
             >
               <Plus />

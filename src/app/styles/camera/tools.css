@@ -1,0 +1,124 @@
+.scene-topbar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+}
+.scene-tools {
+  display: flex;
+  width: 100%;
+  padding: 5px;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px #0002;
+}
+.scene-tools > button {
+  flex: 1;
+  gap: 5px;
+  font-size: 11px;
+  height: 34px;
+  padding-inline: 8px;
+}
+.scene-tool-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  pointer-events: auto;
+}
+.scene-tool-status > span {
+  font-size: 10px;
+  color: #c9d9e7;
+  text-shadow: 0 1px 3px #000;
+}
+.scene-tool-status > button {
+  background: #fff;
+  color: #0067b3;
+  border-color: #d5e3ef;
+}
+.scene-instructions {
+  color: #c9d9e7;
+  bottom: 12px;
+}
+.scene-tool-status > button > span {
+  font-size: 10px;
+}
+.camera-watermark {
+  display: none;
+}
+.scene-footer {
+  background: rgba(255, 255, 255, 0.8);
+  color: #64748b;
+}
+.spatial-label {
+  color: #ffffff;
+  background: #0067b3e8;
+  border-color: #a9dcff;
+  font-size: 11px;
+  padding: 5px 7px;
+}
+.spatial-label.selected {
+  background: #0067b3;
+  color: #fff;
+  border-color: #fff;
+}
+.scene-savebar {
+  position: absolute;
+  z-index: 18;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 10px;
+  border: 1px solid #fff;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 4px 20px #0002;
+}
+.scene-savebar > span {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #64748b;
+  font-size: 10px;
+}
+.scene-objects {
+  bottom: 70px;
+  max-height: 45%;
+}
+.geometry-hint {
+  color: #0067b3 !important;
+}
+.scene-objects .object-details {
+  padding: 10px 12px;
+}
+.scene-source-indicator {
+  background: #a0aec7;
+}
+.scene-source-indicator.online {
+  background: #01dbcc;
+  box-shadow: 0 0 8px #01dbcc40;
+}
+
+.zone-draft-controls {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 9px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 18px #0002;
+  pointer-events: auto;
+}
+.zone-draft-controls > span {
+  flex: 1;
+  color: #64748b;
+  font-size: 11px;
+}

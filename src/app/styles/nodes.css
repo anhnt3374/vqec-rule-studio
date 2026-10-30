@@ -1,9 +1,9 @@
 .operator-node {
   width: 230px;
-  border: 1px solid #3a475d;
+  border: 1px solid #d5e3ef;
   border-radius: 10px;
-  background: #1b2636;
-  box-shadow: 0 4px 12px #0002;
+  background: #ffffff;
+  box-shadow: 0 4px 12px #0067b31a;
   overflow: visible;
   padding: 15px 15px 0;
   position: relative;
@@ -12,7 +12,7 @@
   border-color: var(--node-color);
   box-shadow:
     0 0 0 2px color-mix(in srgb, var(--node-color) 15%, transparent),
-    0 6px 20px #0005;
+    0 6px 20px #0067b31a;
 }
 .operator-node.is-linked {
   border-color: var(--node-color);
@@ -32,25 +32,25 @@
 }
 .node-category {
   font-size: 9px;
-  color: #8d9eb5;
+  color: #64748b;
   flex: 1;
 }
 .node-valid {
-  color: #e7b36f;
+  color: #0067b3;
   display: flex;
 }
 .node-valid.valid {
-  color: #4cc9ab;
+  color: #008577;
 }
 .operator-node > strong {
   display: block;
-  color: #e0e9f5;
+  color: #0067b3;
   font-size: 12px;
   font-weight: 600;
 }
 .operator-node > p {
   font-size: 9px;
-  color: #91a3bc;
+  color: #182443;
   line-height: 1.6;
   margin: 7px 0 12px;
   min-height: 14px;
@@ -60,23 +60,61 @@
 }
 .node-config {
   font-size: 8px;
-  color: #91a7c3;
+  color: #182443;
   display: flex;
   width: calc(100% + 30px);
   justify-content: space-between;
   margin-left: -15px;
-  border-top: 1px solid #35425788;
+  border-top: 1px solid #d5e3ef;
   padding: 7px 15px;
-  background: #15203170;
+  background: #ffffff;
   border-radius: 0 0 9px 9px;
 }
 .node-config:hover {
-  color: #c3e8ff;
-  background: #21344a;
+  color: #0067b3;
+  background: #eef6fc;
 }
 .react-flow__handle {
-  background: #1a293b !important;
+  background: #ffffff !important;
   border: 2px solid var(--node-color) !important;
   width: 9px !important;
   height: 9px !important;
+}
+
+.operator-node {
+  width: 230px;
+  background: rgba(255, 255, 255, 0.96);
+  border-color: #dce7f2;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 103, 179, 0.09);
+}
+.operator-node > strong {
+  font-size: 14px;
+  color: #182443;
+}
+.operator-node > p {
+  font-size: 11px;
+  color: #64748b;
+}
+.node-category {
+  color: #64748b;
+  font-size: 10px;
+}
+.node-config {
+  background: #f5faff;
+  color: #0067b3;
+  border-top-color: #e7eff7;
+}
+.node-config:hover {
+  background: #e5f3ff;
+  color: #00589a;
+}
+.react-flow__handle {
+  width: 12px !important;
+  height: 12px !important;
+  background: #fff !important;
+  cursor: crosshair;
+}
+.node-valid.valid {
+  color: #008577;
 }

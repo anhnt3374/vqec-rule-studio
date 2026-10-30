@@ -39,7 +39,7 @@ export function OperatorNode({
       className={`operator-node ${selected ? "is-selected" : ""} ${objectId && objectId === data.config.spatialId ? "is-linked" : ""}`}
       style={{ "--node-color": def.color } as React.CSSProperties}
     >
-      {def.input && <Handle id="in" type="target" position={Position.Left} />}
+      {def.input && <Handle id="in" type="target" position={Position.Top} />}
       <div className="node-top">
         <span className="node-icon">
           <OperatorIcon kind={data.kind} />
@@ -65,7 +65,7 @@ export function OperatorNode({
         Configure <span>↗</span>
       </button>
       {def.output && (
-        <Handle id="out" type="source" position={Position.Right} />
+        <Handle id="out" type="source" position={Position.Bottom} />
       )}
     </div>
   );

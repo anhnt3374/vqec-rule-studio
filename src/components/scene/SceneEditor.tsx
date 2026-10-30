@@ -2,10 +2,6 @@ import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import {
   Camera,
   SlidersHorizontal,
-  MousePointer2,
-  ArrowRightLeft,
-  Scan,
-  Layers,
   Radio,
   ChevronDown,
   Check,
@@ -16,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useSceneDrawing } from "@/hooks/useSceneDrawing";
 import { useWhep, type WhepSource } from "@/hooks/useWhep";
 import { SceneOverlay, type SceneFilters } from "./SceneOverlay";
+import { SceneTools } from "./SceneTools";
 import { SceneObjects } from "./SceneObjects";
 import { SourceDialog } from "./SourceDialog";
 export function SceneEditor() {
@@ -29,6 +26,7 @@ export function SceneEditor() {
       all: false,
     }),
     [objects, setObjects] = useState(false),
+    [expanded, setExpanded] = useState(false),
     [sourceOpen, setSourceOpen] = useState(false),
     [source, setSource] = useState<WhepSource | null>(null),
     [liveRatio, setLiveRatio] = useState(16 / 9);
@@ -58,7 +56,10 @@ export function SceneEditor() {
     setObjects(false);
   }, [s.active?.id]);
   useEffect(() => {
-    if (s.selectedObject) setObjects(true);
+    if (s.selectedObject) {
+      setObjects(true);
+      setExpanded(false);
+    } else setObjects(false);
   }, [s.selectedObject]);
   if (!s.scene) return <section className="column" />;
   const toggle = (key: keyof SceneFilters) =>
@@ -111,48 +112,14 @@ export function SceneEditor() {
         </button>
       </div>
       <div className="camera-content">
-        <div className="scene-topbar">
-          <div className="scene-tools">
-            <Button
-              size="icon"
-              variant={drawing.tool === "select" ? "default" : "ghost"}
-              aria-label="Select scene objects"
-              title="Select and move"
-              onClick={() => drawing.choose("select")}
-            >
-              <MousePointer2 />
-            </Button>
-            <Button
-              size="icon"
-              disabled={!drawing.editable}
-              variant={drawing.tool === "gate" ? "default" : "ghost"}
-              aria-label="Draw Gate"
-              title="Draw Gate · click and drag"
-              onClick={() => drawing.choose("gate")}
-            >
-              <ArrowRightLeft />
-            </Button>
-            <Button
-              size="icon"
-              disabled={!drawing.editable}
-              variant={drawing.tool === "zone" ? "default" : "ghost"}
-              aria-label="Draw Zone"
-              title="Draw Zone · click vertices"
-              onClick={() => drawing.choose("zone")}
-            >
-              <Scan />
-            </Button>
-          </div>
-          <Button
-            size="sm"
-            variant="outline"
-            className={objects ? "text-sky-300" : ""}
-            onClick={() => setObjects(!objects)}
-          >
-            <Layers />
-            Objects <span>{s.scene.objects.length}</span>
-          </Button>
-        </div>
+        <SceneTools
+          drawing={drawing}
+          objects={objects && expanded}
+          toggleObjects={() => {
+            setExpanded(!objects || !expanded);
+            setObjects(!objects || !expanded);
+          }}
+        />
         <div ref={container} className="scene-stage-container">
           <div
             className="scene-stage"
@@ -205,12 +172,7 @@ export function SceneEditor() {
           ) : drawing.tool === "zone" ? (
             <>
               <span className="instruction-dot" />
-              Click vertices · Enter or double-click to finish{" "}
-              {drawing.points.length >= 3 && (
-                <Button size="sm" onClick={drawing.complete}>
-                  Finish zone
-                </Button>
-              )}
+              Drag an outline, or click vertices · Enter to finish{" "}
             </>
           ) : (
             <>
@@ -220,7 +182,7 @@ export function SceneEditor() {
               ) : (
                 <>
                   <LockKeyhole size={11} />
-                  Geometry read-only · enter Edit on a custom rule
+                  Click a gate/zone to edit · or use Draw Gate / Draw Zone
                 </>
               )}
             </>
@@ -230,6 +192,7 @@ export function SceneEditor() {
           <SceneObjects
             close={() => setObjects(false)}
             editable={drawing.editable}
+            compact={!expanded}
           />
         )}
         <div className="camera-watermark">

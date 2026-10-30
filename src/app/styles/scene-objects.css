@@ -4,11 +4,11 @@
   left: 14px;
   right: 14px;
   z-index: 15;
-  border: 1px solid #40546d;
+  border: 1px solid #d5e3ef;
   border-radius: 9px;
-  background: #152233f2;
+  background: #ffffff;
   backdrop-filter: blur(16px);
-  box-shadow: 0 8px 36px #0006;
+  box-shadow: 0 8px 36px #0067b31a;
   max-height: 52%;
   display: flex;
   flex-direction: column;
@@ -19,7 +19,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 7px 12px;
-  border-bottom: 1px solid #33455d;
+  border-bottom: 1px solid #d5e3ef;
 }
 .scene-objects h3 {
   font-size: 11px;
@@ -27,7 +27,7 @@
 }
 .scene-objects h3 span {
   font-size: 9px;
-  color: #7391af;
+  color: #64748b;
   margin-left: 6px;
 }
 .objects-list {
@@ -43,8 +43,8 @@
   padding: 0 4px;
 }
 .object-row.selected {
-  background: #2f658b29;
-  border-color: #3d8fbe55;
+  background: #eef6fc;
+  border-color: #d5e3ef;
 }
 .object-main {
   display: flex;
@@ -55,7 +55,7 @@
   padding: 8px 4px;
   font-size: 10px;
   text-align: left;
-  color: #a8c9e2;
+  color: #0067b3;
   cursor: grab;
 }
 .object-main > span {
@@ -67,7 +67,7 @@
   flex-shrink: 0;
 }
 .object-main > svg:first-child {
-  color: #546f8c;
+  color: #64748b;
 }
 .object-row button > svg {
   width: 13px;
@@ -75,8 +75,8 @@
 }
 .object-details {
   padding: 12px;
-  border-top: 1px solid #33455d;
-  background: #0f1d2f80;
+  border-top: 1px solid #d5e3ef;
+  background: #ffffff;
 }
 .object-details strong {
   font-size: 11px;
@@ -87,7 +87,7 @@
 }
 .object-details p {
   font-size: 9px;
-  color: #6f8ba8;
+  color: #64748b;
   margin: 6px 0 12px;
   line-height: 1.7;
 }
@@ -100,22 +100,22 @@
 }
 .scene-objects > footer {
   font-size: 8px;
-  color: #6888a7;
+  color: #64748b;
   padding: 9px 12px;
-  border-top: 1px solid #33455d;
+  border-top: 1px solid #d5e3ef;
 }
 .source-section {
-  border: 1px solid #33445c;
+  border: 1px solid #d5e3ef;
   padding: 14px;
   border-radius: 8px;
 }
 .source-section p {
   font-size: 10px;
-  color: #8ca0bb;
+  color: #182443;
   line-height: 1.8;
   margin: 10px 0;
 }
 .source-section .eyebrow {
-  color: #7caaca;
+  color: #64748b;
   font-size: 8px;
 }

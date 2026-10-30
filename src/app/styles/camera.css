@@ -2,7 +2,7 @@
   gap: 9px;
 }
 .scene-header > svg {
-  color: #8ba5c3;
+  color: #182443;
   flex-shrink: 0;
 }
 .scene-header h2 {
@@ -12,11 +12,11 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #7a8ca4;
+  background: #eef6fc;
   flex-shrink: 0;
 }
 .scene-source-indicator.online {
-  background: #43d6af;
+  background: #e7f4ff;
   box-shadow: 0 0 8px #43d6af50;
 }
 .scene-filters {
@@ -24,15 +24,15 @@
   align-items: center;
   gap: 5px;
   padding: 10px 12px;
-  background: #141e2b;
-  border-bottom: 1px solid #2a3649;
+  background: #ffffff;
+  border-bottom: 1px solid #d5e3ef;
   flex-wrap: wrap;
   min-height: 52px;
 }
 .filter-label {
   font-size: 8px;
   letter-spacing: 1.3px;
-  color: #617b97;
+  color: #64748b;
   margin-right: 4px;
 }
 .scene-filters > button {
@@ -40,20 +40,20 @@
   align-items: center;
   gap: 3px;
   font-size: 9px;
-  color: #6d839e;
+  color: #64748b;
   padding: 4px 5px;
   border: 1px solid transparent;
   border-radius: 4px;
 }
 .scene-filters > button.on {
-  color: #a9c7e1;
-  background: #26384b50;
-  border-color: #3a53694d;
+  color: #0067b3;
+  background: #eef6fc;
+  border-color: #d5e3ef;
 }
 .scene-filters > .source-select {
   margin-left: auto;
   gap: 5px;
-  color: #81a2c0;
+  color: #64748b;
 }
 .camera-content {
   flex: 1;
@@ -80,21 +80,21 @@
   display: flex;
   gap: 3px;
   padding: 3px;
-  border: 1px solid #374861;
-  background: #162334e8;
+  border: 1px solid #d5e3ef;
+  background: #ffffff;
   backdrop-filter: blur(8px);
   border-radius: 7px;
 }
 .scene-topbar > button {
-  background: #162334e8;
+  background: #ffffff;
   height: 38px;
-  border-color: #374861;
+  border-color: #d5e3ef;
   font-size: 10px;
 }
 .scene-topbar > button > span {
   font-size: 9px;
   border-radius: 4px;
-  background: #354b64;
+  background: #eef6fc;
   padding: 0 5px;
 }
 .scene-stage-container {
@@ -142,9 +142,9 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  background: #102033e8;
-  color: #9fdefa;
-  border: 1px solid #4a9cc16b;
+  background: #ffffff;
+  color: #0067b3;
+  border: 1px solid #d5e3ef;
   border-radius: 4px;
   padding: 4px 6px;
   font-size: 9px;
@@ -160,9 +160,9 @@
   font-size: 11px;
 }
 .spatial-label.selected {
-  border-color: #57d4ff;
+  border-color: #d5e3ef;
   box-shadow: 0 0 0 2px #54d9ff25;
-  background: #0c263e;
+  background: #ffffff;
 }
 .mock-tracks rect {
   fill: none;
@@ -188,7 +188,7 @@
   z-index: 4;
   text-align: center;
   font-size: 9px;
-  color: #7c96b2;
+  color: #64748b;
   line-height: 1.7;
   display: flex;
   align-items: center;
@@ -202,7 +202,7 @@
 .instruction-dot {
   width: 4px;
   height: 4px;
-  background: #4a86a9;
+  background: #eef6fc;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -210,7 +210,7 @@
   position: absolute;
   bottom: 18px;
   left: 16px;
-  color: #3c536c;
+  color: #64748b;
   font-size: 9px;
   letter-spacing: 1.3px;
   display: flex;

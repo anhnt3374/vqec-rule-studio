@@ -64,6 +64,7 @@ export interface OperatorData extends Record<string, unknown> {
 export type OperatorNode = Node<OperatorData, "operator">;
 export type OperatorEdge = Edge;
 export interface RuleGraph {
+  layout?: "vertical";
   nodes: OperatorNode[];
   edges: OperatorEdge[];
 }

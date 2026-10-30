@@ -7,7 +7,7 @@ export function App() {
   const ready = useStudio((s) => s.ready),
     error = useStudio((s) => s.error),
     notice = useStudio((s) => s.notice),
-    dirty = useStudio((s) => s.dirty);
+    dirty = useStudio((s) => s.dirty || s.sceneDirty);
   useEffect(() => {
     void useStudio.getState().init();
   }, []);

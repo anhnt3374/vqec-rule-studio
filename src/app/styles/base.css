@@ -3,16 +3,16 @@
 }
 :root {
   font-family: var(--font-sans);
-  color: #d7e0ed;
-  background: #0b1018;
+  color: #182443;
+  background: #ffffff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  color-scheme: dark;
+  color-scheme: light;
   font-size: 13px;
-  --line: #283140;
-  --muted: #7f8ca2;
-  --sky: #38bdf8;
+  --line: #dce7f2;
+  --muted: #64748b;
+  --sky: #0067b3;
 }
 * {
   box-sizing: border-box;
@@ -41,14 +41,14 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: 1px solid #38bdf8;
-  border-color: #38bdf8;
+  border-color: #d5e3ef;
 }
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #344157;
+  background: #eef6fc;
   border-radius: 6px;
 }
 ::-webkit-scrollbar-track {
@@ -63,7 +63,7 @@ select:focus {
   gap: 0;
   overflow: hidden;
   background:
-    radial-gradient(ellipse at top left, #18243380, transparent 55%), #0b1018;
+    radial-gradient(ellipse at top left, #ffffff, transparent 55%), #ffffff;
 }
 .column {
   display: flex;
@@ -71,11 +71,11 @@ select:focus {
   min-height: 0;
   min-width: 0;
   overflow: hidden;
-  border: 1px solid #2b3545;
+  border: 1px solid #d5e3ef;
   border-radius: 12px;
-  background: #151c27;
+  background: #ffffff;
   position: relative;
-  box-shadow: 0 4px 24px #0002;
+  box-shadow: 0 4px 24px #0067b31a;
 }
 .splitter {
   display: grid;
@@ -86,12 +86,12 @@ select:focus {
 .splitter span {
   width: 2px;
   height: 28px;
-  background: #303d50;
+  background: #eef6fc;
   border-radius: 2px;
 }
 .splitter:hover span,
 .splitter:focus span {
-  background: #38bdf8;
+  background: #e7f4ff;
   height: 45px;
 }
 .panel-header {
@@ -102,7 +102,7 @@ select:focus {
   gap: 11px;
   padding: 16px;
   border-bottom: 1px solid var(--line);
-  background: #19212e;
+  background: #ffffff;
 }
 .panel-header h1,
 .panel-header h2 {
@@ -111,7 +111,7 @@ select:focus {
   line-height: 1.7;
   margin: 0;
   letter-spacing: -0.2px;
-  color: #e9f0f9;
+  color: #0067b3;
 }
 .eyebrow {
   display: block;
@@ -119,7 +119,7 @@ select:focus {
   font-size: 9px;
   line-height: 1.8;
   font-weight: 600;
-  color: #8493aa;
+  color: #64748b;
 }
 .brand-icon {
   display: grid;
@@ -127,12 +127,51 @@ select:focus {
   width: 37px;
   height: 39px;
   border-radius: 9px;
-  background: #38bdf814;
-  color: #58c8fb;
-  border: 1px solid #38bdf82a;
+  background: #e7f4ff;
+  color: #0067b3;
+  border: 1px solid #d5e3ef;
 }
 .version {
-  color: #65758c;
+  color: #64748b;
   font-weight: 400;
   font-size: 11px;
+}
+
+.workspace {
+  background: radial-gradient(
+    100% 100% at 50% 0%,
+    #d8ecff 0%,
+    #ebf5ff 50%,
+    #f7faff 100%
+  );
+}
+.column {
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  box-shadow:
+    0 8px 32px rgba(0, 103, 179, 0.07),
+    inset 0 1px 0 #fff;
+  backdrop-filter: blur(24px);
+}
+.panel-header {
+  background: rgba(255, 255, 255, 0.55);
+  border-bottom: 1px solid #ffffffd9;
+}
+.panel-header h1,
+.panel-header h2 {
+  font-size: 14px;
+  color: #182443;
+}
+.eyebrow {
+  color: #64748b;
+  font-size: 9px;
+}
+.version {
+  color: #7b8ca3;
+}
+.brand-icon {
+  background: #cee9ff80;
+  color: #0067b3;
+  border-color: #ffffff;
 }

@@ -11,15 +11,15 @@
   max-width: min(560px, 90vw);
   padding: 15px;
   border-radius: 10px;
-  background: #142c2b;
-  border: 1px solid #3e8c7c;
-  color: #61d5b6;
-  box-shadow: 0 10px 50px #0008;
+  background: #ffffff;
+  border: 1px solid #d5e3ef;
+  color: #008577;
+  box-shadow: 0 10px 50px #0067b31a;
 }
 .toast.error {
-  background: #30281e;
-  border-color: #a1773e;
-  color: #ebbd7b;
+  background: #ffffff;
+  border-color: #d5e3ef;
+  color: #0067b3;
 }
 .toast > svg {
   margin-top: 3px;
@@ -28,10 +28,10 @@
 .toast strong {
   font-size: 12px;
   font-weight: 600;
-  color: #d1e3e0;
+  color: #182443;
 }
 .toast.error strong {
-  color: #f0d5af;
+  color: #0067b3;
 }
 .toast p {
   font-size: 11px;
@@ -48,8 +48,8 @@
   justify-content: center;
   flex-direction: column;
   gap: 15px;
-  color: #87a3bf;
-  background: #101722;
+  color: #64748b;
+  background: #ffffff;
   font-size: 13px;
 }
 @media (max-width: 1250px) {
@@ -105,9 +105,9 @@
   }
 }
 
-.react-flow.dark {
-  --xy-background-color: #101722;
-  --xy-background-color-default: #101722;
+.react-flow.light {
+  --xy-background-color: #f5faff;
+  --xy-background-color-default: #f5faff;
 }
 .operator-node > strong {
   font-size: 14px;

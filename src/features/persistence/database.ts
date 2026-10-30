@@ -46,7 +46,7 @@ export async function loadWorkspace() {
     },
   );
   return {
-    rules: await db.rules.toArray(),
+    rules: (await db.rules.toArray()).map(verticalRule),
     scene: (await db.scenes.toArray())[0],
     published: await db.published.toArray(),
   };
@@ -81,4 +81,23 @@ export async function removeRule(id: string) {
     await db.drafts.delete(id);
     await db.published.delete(id);
   });
+}
+
+// Present legacy horizontal documents vertically without rewriting saved snapshots.
+export function verticalRule(rule: Rule): Rule {
+  if (rule.graph.layout === "vertical") return rule;
+  return {
+    ...rule,
+    graph: {
+      ...rule.graph,
+      layout: "vertical",
+      nodes: rule.graph.nodes.map((node) => ({
+        ...node,
+        position: { x: node.position.y, y: node.position.x },
+      })),
+    },
+  };
+}
+export async function persistScene(scene: CameraScene) {
+  await db.scenes.put(scene);
 }

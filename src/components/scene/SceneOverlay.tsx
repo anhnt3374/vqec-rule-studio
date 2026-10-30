@@ -97,7 +97,7 @@ export function SceneOverlay({
                     x2={g.points[1].x * 1000}
                     y2={g.points[1].y * 1000}
                     stroke="transparent"
-                    strokeWidth="18"
+                    strokeWidth="22"
                     vectorEffect="non-scaling-stroke"
                     onPointerDown={(e) => drawing.begin(e, object)}
                   />
@@ -140,8 +140,8 @@ export function SceneOverlay({
                     key={i}
                     cx={p.x * 1000}
                     cy={p.y * 1000}
-                    rx={(5 / width) * 1000}
-                    ry={(5 / height) * 1000}
+                    rx={(7 / width) * 1000}
+                    ry={(7 / height) * 1000}
                     stroke={color}
                     strokeWidth="2"
                     fill="#101827"
@@ -205,7 +205,13 @@ export function SceneOverlay({
                 opacity: dim(object) ? 0.35 : 1,
                 pointerEvents: drawing.tool === "select" ? "auto" : "none",
               }}
-              draggable={drawing.editable && drawing.tool === "select"}
+              draggable={
+                !!s.active &&
+                s.active.type === "Custom" &&
+                !s.sceneEditing &&
+                !s.busy &&
+                drawing.tool === "select"
+              }
               onDragStart={(e) => {
                 e.dataTransfer.setData(SPATIAL_MIME, object.id);
                 e.dataTransfer.effectAllowed = "copy";

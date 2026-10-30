@@ -63,7 +63,14 @@ export const graphEditor: StudioSlice<
     const { active, editing, busy } = get();
     if (!active || !editing || busy || active.type === "System") return;
     if (history) get().checkpoint();
-    set({ active: { ...active, graph, status: "Unsaved" }, dirty: true });
+    set({
+      active: {
+        ...active,
+        graph: { ...graph, layout: "vertical" },
+        status: "Unsaved",
+      },
+      dirty: true,
+    });
   },
   addNode(kind, position, spatialId) {
     const { active, editing, busy } = get();
@@ -71,8 +78,8 @@ export const graphEditor: StudioSlice<
     const node = makeNode(
       kind,
       position ?? {
-        x: 100 + (active.graph.nodes.length % 3) * 280,
-        y: 130 + Math.floor(active.graph.nodes.length / 3) * 160,
+        x: 180 + Math.floor(active.graph.nodes.length / 4) * 300,
+        y: 40 + (active.graph.nodes.length % 4) * 230,
       },
       spatialId,
     );
@@ -80,6 +87,16 @@ export const graphEditor: StudioSlice<
     get().selectNode(node.id, false);
   },
   spatialDrop(id, position) {
+    const s = get();
+    if (s.sceneEditing) {
+      s.notify("Save the scene before adding a spatial operator.");
+      return;
+    }
+    if (!s.active || s.active.type === "System") {
+      s.notify("Choose a custom rule to add this spatial operator.");
+      return;
+    }
+    if (!s.editing) s.edit();
     const object = get().scene?.objects.find((o) => o.id === id);
     if (object) get().addNode(object.geometry.kind, position, id);
   },

@@ -98,11 +98,19 @@ function Canvas() {
         className="graph-canvas"
         onDragOver={(e) => {
           e.preventDefault();
-          e.dataTransfer.dropEffect = editable ? "copy" : "none";
+          e.dataTransfer.dropEffect =
+            s.active?.type === "Custom" && !s.sceneEditing && !s.busy
+              ? "copy"
+              : "none";
         }}
         onDrop={(e) => {
           e.preventDefault();
-          if (!editable) return;
+          if (s.sceneEditing) {
+            s.notify("Save the scene before dropping objects into the graph.");
+            return;
+          }
+          if (!s.active || s.active.type === "System" || s.busy) return;
+          if (!s.editing) s.edit();
           const point = flow.screenToFlowPosition({
             x: e.clientX,
             y: e.clientY,
@@ -152,9 +160,9 @@ function Canvas() {
           fitViewOptions={{ padding: 0.22, maxZoom: 1 }}
           minZoom={0.15}
           maxZoom={2}
-          colorMode="dark"
+          colorMode="light"
           defaultEdgeOptions={{
-            style: { stroke: "#647b99", strokeWidth: 1.6 },
+            style: { stroke: "#0067b3", strokeWidth: 1.6 },
           }}
           proOptions={{ hideAttribution: true }}
         >
@@ -162,12 +170,12 @@ function Canvas() {
             variant={BackgroundVariant.Dots}
             gap={22}
             size={1}
-            color="#354054"
+            color="#b4cce0"
           />
           <Controls showInteractive={false} />
           <MiniMap
             nodeColor={(n) => definition(n.data.kind as OperatorKind).color}
-            maskColor="#0e141dba"
+            maskColor="#eef5fbcc"
             pannable
             zoomable
           />

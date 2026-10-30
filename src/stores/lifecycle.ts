@@ -30,6 +30,10 @@ export const lifecycle: StudioSlice<
   },
   open(id) {
     if (get().busy) return false;
+    if (get().sceneEditing) {
+      get().notify("Save or cancel the scene before switching rules.");
+      return false;
+    }
     if (get().dirty) return false;
     const active = get().rules.find((r) => r.id === id) ?? null;
     set({
@@ -46,6 +50,10 @@ export const lifecycle: StudioSlice<
   },
   createRule(name) {
     if (get().dirty || get().busy || !get().scene) return;
+    if (get().sceneEditing) {
+      get().notify("Save or cancel the scene before creating a rule.");
+      return;
+    }
     const now = new Date().toISOString();
     const rule: Rule = {
       id: crypto.randomUUID(),
@@ -55,7 +63,7 @@ export const lifecycle: StudioSlice<
       status: "Unsaved",
       createdAt: now,
       updatedAt: now,
-      graph: { nodes: [], edges: [] },
+      graph: { layout: "vertical", nodes: [], edges: [] },
       cameraId: get().scene!.id,
       version: 1,
     };
@@ -74,6 +82,10 @@ export const lifecycle: StudioSlice<
   edit() {
     const { active, scene, busy } = get();
     if (!active || !scene || busy) return;
+    if (get().sceneEditing) {
+      get().notify("Save or cancel the scene before editing the graph.");
+      return;
+    }
     set({
       editing: true,
       baseline: { rule: clone(active), scene },

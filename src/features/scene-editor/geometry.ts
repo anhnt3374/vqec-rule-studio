@@ -57,3 +57,34 @@ export function hasArea(points: Point[]) {
     ) > 0.0001
   );
 }
+// Reduce pointer samples to editable vertices while retaining the drawn outline.
+export function simplifyStroke(points: Point[], tolerance = 0.008): Point[] {
+  if (points.length <= 2) return points;
+  const a = points[0],
+    b = points[points.length - 1],
+    dx = b.x - a.x,
+    dy = b.y - a.y,
+    length = dx * dx + dy * dy;
+  let max = 0,
+    index = 0;
+  for (let i = 1; i < points.length - 1; i++) {
+    const p = points[i],
+      t = length
+        ? Math.max(
+            0,
+            Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / length),
+          )
+        : 0;
+    const distance = Math.hypot(p.x - a.x - t * dx, p.y - a.y - t * dy);
+    if (distance > max) {
+      max = distance;
+      index = i;
+    }
+  }
+  return max > tolerance
+    ? [
+        ...simplifyStroke(points.slice(0, index + 1), tolerance).slice(0, -1),
+        ...simplifyStroke(points.slice(index), tolerance),
+      ]
+    : [a, b];
+}

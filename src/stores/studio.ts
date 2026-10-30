@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type { Studio } from "./types";
 import { lifecycle } from "./lifecycle";
 import { graphEditor } from "./graph";
+import { sceneSession } from "./scene-session";
 import { sceneEditor } from "./scene";
 const empty = {
   ready: false,
@@ -12,6 +13,9 @@ const empty = {
   scene: null,
   published: [],
   active: null,
+  sceneEditing: false,
+  sceneDirty: false,
+  sceneBaseline: null,
   editing: false,
   dirty: false,
   baseline: null,
@@ -26,6 +30,7 @@ export const useStudio = create<Studio>((set, get, api) => ({
   ...lifecycle(set, get, api),
   ...graphEditor(set, get, api),
   ...sceneEditor(set, get, api),
+  ...sceneSession(set, get, api),
   selectNode(id, inspect = true) {
     const node = get().active?.graph.nodes.find((n) => n.id === id);
     set({

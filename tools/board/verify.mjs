@@ -21,6 +21,7 @@ const errors = [];
 page.on("pageerror", (error) => errors.push(error.message));
 try {
   await page.goto(base);
+  assert.equal(await page.locator("html").getAttribute("class"), "light");
   await page
     .getByRole("button", { name: "Camera source", exact: true })
     .click();
@@ -84,11 +85,17 @@ try {
     frames: v.getVideoPlaybackQuality().totalVideoFrames,
     dropped: v.getVideoPlaybackQuality().droppedVideoFrames,
   }));
-  await page.getByRole("button", { name: "Rule", exact: true }).click();
-  await page
-    .getByRole("textbox", { name: "Rule name" })
-    .fill("Board live authoring check");
-  await page.getByRole("button", { name: "Create rule", exact: true }).click();
+  if (process.env.STUDIO_SCREENSHOT) {
+    await page
+      .getByRole("button", { name: /Restricted Area Alert/ })
+      .first()
+      .click();
+    await page.locator(".react-flow__node").nth(2).waitFor();
+    await page.screenshot({
+      path: process.env.STUDIO_SCREENSHOT.replace(/\.png$/, "-graph.png"),
+    });
+    await page.getByRole("button", { name: "Back to rules" }).click();
+  }
   await page.getByRole("button", { name: "Draw Gate", exact: true }).click();
   const rect = await page.getByLabel("Scene drawing canvas").boundingBox();
   await page.mouse.move(
@@ -102,7 +109,19 @@ try {
     { steps: 10 },
   );
   await page.mouse.up();
-  await page.getByRole("button", { name: "Close scene objects" }).click();
+  assert.equal(
+    await page.locator(".react-flow__node").count(),
+    0,
+    "Geometry creation must not create an operator",
+  );
+  await page.getByRole("button", { name: "Save scene", exact: true }).click();
+  await page.getByRole("status").filter({ hasText: "Scene saved" }).waitFor();
+  await page.getByRole("button", { name: "Rule", exact: true }).click();
+  await page
+    .getByRole("textbox", { name: "Rule name" })
+    .fill("Board live authoring check");
+  await page.getByRole("button", { name: "Create rule", exact: true }).click();
+
   await page
     .locator(".spatial-label")
     .filter({ hasText: "Gate 2" })
@@ -111,7 +130,16 @@ try {
     });
   assert.equal(await page.locator(".react-flow__node").count(), 1);
   await page.getByRole("button", { name: "Save Draft", exact: true }).click();
-  await page.getByRole("status").waitFor();
+  await page
+    .getByRole("status")
+    .filter({ hasText: "Draft and scene saved" })
+    .waitFor();
+  assert.equal(
+    await page
+      .locator(".react-flow__handle.source")
+      .getAttribute("data-handlepos"),
+    "bottom",
+  );
   if (process.env.STUDIO_SCREENSHOT)
     await page.screenshot({ path: process.env.STUDIO_SCREENSHOT });
   await page.reload();
@@ -131,6 +159,8 @@ try {
       aiEnabled: details.aiEnabled,
       overlayEnabled: details.overlayEnabled,
       video: stats,
+      drawBeforeRule: "pass",
+      verticalHandles: "pass",
       drawDropSaveReload: "pass",
       browserErrors: errors,
     }),

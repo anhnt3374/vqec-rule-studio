@@ -7,12 +7,12 @@ const variants = cva(
   {
     variants: {
       variant: {
-        default: "bg-sky-500 text-slate-950 hover:bg-sky-400",
+        default: "bg-[#0067b3] text-white hover:bg-[#00589a]",
         outline:
-          "border border-slate-700 bg-transparent hover:bg-slate-800 text-slate-200",
-        ghost: "hover:bg-slate-800 text-slate-400 hover:text-white",
+          "border border-[#d5e3ef] bg-white/70 hover:bg-sky-50 text-[#0067b3]",
+        ghost: "hover:bg-sky-100/70 text-slate-600 hover:text-[#0067b3]",
         destructive:
-          "bg-rose-500/15 text-rose-300 hover:bg-rose-500/25 border border-rose-500/30",
+          "bg-rose-500/15 text-rose-700 hover:bg-rose-500/25 border border-rose-500/30",
       },
       size: { default: "h-8 px-3", sm: "h-7 px-2", icon: "h-8 w-8" },
     },

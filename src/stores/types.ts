@@ -19,6 +19,12 @@ export interface Studio {
   scene: CameraScene | null;
   published: PublishedSnapshot[];
   active: Rule | null;
+  sceneEditing: boolean;
+  sceneDirty: boolean;
+  sceneBaseline: CameraScene | null;
+  beginScene: () => boolean;
+  saveScene: () => Promise<void>;
+  cancelScene: () => void;
   editing: boolean;
   dirty: boolean;
   baseline: EditSnapshot | null;

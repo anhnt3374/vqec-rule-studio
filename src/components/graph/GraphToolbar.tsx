@@ -196,7 +196,7 @@ export function GraphToolbar() {
                 : "Not published"}
             </span>
           </p>
-          <p className="text-slate-400 text-xs">
+          <p className="text-slate-500 text-xs">
             Publishing only stores configuration. No event processing runs.
           </p>
         </div>

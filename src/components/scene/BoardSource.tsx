@@ -71,7 +71,7 @@ export function BoardSource({
         />
       </label>
       {error && (
-        <p role="alert" className="text-rose-300">
+        <p role="alert" className="text-rose-700">
           {error}
         </p>
       )}

@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
+import { canEditScene } from "@/stores/scene";
 import { useStudio } from "@/stores/studio";
 import type { Point, SpatialObject } from "@/models/types";
 import {
   normalized,
   translate,
   hasArea,
+  simplifyStroke,
 } from "@/features/scene-editor/geometry";
 export type SceneTool = "select" | "gate" | "zone";
 interface Drag {
@@ -20,8 +22,9 @@ export function useSceneDrawing() {
     [preview, setPreview] = useState<SpatialObject | null>(null);
   const svg = useRef<SVGSVGElement>(null),
     drag = useRef<Drag | null>(null),
-    gateStart = useRef<Point | null>(null);
-  const editable = s.editing && s.active?.type === "Custom" && !s.busy;
+    gateStart = useRef<Point | null>(null),
+    zoneStroke = useRef<Point[] | null>(null);
+  const editable = canEditScene(s);
   const point = (e: ReactPointerEvent) =>
     normalized(e.clientX, e.clientY, svg.current!.getBoundingClientRect());
   function clear() {
@@ -29,14 +32,22 @@ export function useSceneDrawing() {
     setPreview(null);
     drag.current = null;
     gateStart.current = null;
+    zoneStroke.current = null;
   }
   function choose(next: SceneTool) {
+    if (next !== "select" && !useStudio.getState().beginScene()) return;
     clear();
+    if (next !== "select") s.selectObject(null);
     setTool(next);
   }
-  function complete() {
-    if (!editable || points.length < 3) return;
-    if (!hasArea(points)) {
+  function createZone(vertices: Point[]) {
+    if (
+      !useStudio.getState().scene ||
+      !canEditScene(useStudio.getState()) ||
+      vertices.length < 3
+    )
+      return;
+    if (!hasArea(vertices)) {
       s.notify("Zone needs at least three non-collinear vertices.");
       return;
     }
@@ -44,10 +55,14 @@ export function useSceneDrawing() {
       id: crypto.randomUUID(),
       name: `Zone ${s.scene!.objects.filter((o) => o.geometry.kind === "zone").length + 1}`,
       visible: true,
-      geometry: { kind: "zone", points },
+      geometry: { kind: "zone", points: vertices },
     });
     setPoints([]);
+    zoneStroke.current = null;
     setTool("select");
+  }
+  function complete() {
+    createZone(points);
   }
   function down(e: ReactPointerEvent<SVGSVGElement>) {
     if (e.button !== 0 || !editable || tool === "select") return;
@@ -68,14 +83,20 @@ export function useSceneDrawing() {
         complete();
         return;
       }
-      if (e.detail < 2) setPoints([...points, p]);
+      if (e.detail < 2) {
+        if (!points.length) {
+          zoneStroke.current = [p];
+          svg.current?.setPointerCapture(e.pointerId);
+        }
+        setPoints([...points, p]);
+      }
     }
   }
   function begin(e: ReactPointerEvent, object: SpatialObject, vertex?: number) {
     if (tool !== "select") return;
     e.stopPropagation();
     s.selectObject(object.id);
-    if (!editable) return;
+    if (!editable && !useStudio.getState().beginScene()) return;
     drag.current = { object, start: point(e), vertex };
     setPreview(object);
     svg.current?.setPointerCapture(e.pointerId);
@@ -83,6 +104,20 @@ export function useSceneDrawing() {
   function move(e: ReactPointerEvent<SVGSVGElement>) {
     const p = point(e);
     if (gateStart.current) setPoints([gateStart.current, p]);
+    if (zoneStroke.current) {
+      const stroke = zoneStroke.current,
+        last = stroke[stroke.length - 1];
+      if (
+        Math.hypot(
+          (p.x - last.x) * svg.current!.clientWidth,
+          (p.y - last.y) * svg.current!.clientHeight,
+        ) > 6 &&
+        stroke.length < 256
+      ) {
+        stroke.push(p);
+        setPoints([...stroke]);
+      }
+    }
     const d = drag.current;
     if (!d) return;
     if (d.vertex === undefined)
@@ -101,6 +136,21 @@ export function useSceneDrawing() {
       });
   }
   function up(e: ReactPointerEvent<SVGSVGElement>) {
+    if (zoneStroke.current) {
+      const stroke = zoneStroke.current;
+      zoneStroke.current = null;
+      if (stroke.length > 2 && hasArea(stroke)) {
+        const vertices = simplifyStroke(stroke),
+          first = vertices[0],
+          last = vertices[vertices.length - 1];
+        if (
+          vertices.length > 3 &&
+          Math.hypot(last.x - first.x, last.y - first.y) < 0.02
+        )
+          vertices.pop();
+        createZone(vertices);
+      }
+    }
     if (gateStart.current) {
       const start = gateStart.current,
         end = point(e);
@@ -147,8 +197,19 @@ export function useSceneDrawing() {
       drag.current = null;
       gateStart.current = null;
       setTool("select");
+      zoneStroke.current = null;
     }
   }, [editable, s.active?.id]);
+  const pendingOutline = points.length > 0;
+  useEffect(() => {
+    if (!pendingOutline) return;
+    const warn = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [pendingOutline]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       if (

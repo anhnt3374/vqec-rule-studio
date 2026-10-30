@@ -6,10 +6,10 @@
   width: 280px;
   max-width: calc(100% - 32px);
   max-height: calc(100% - 32px);
-  border: 1px solid #415571;
+  border: 1px solid #d5e3ef;
   border-radius: 10px;
-  background: #1a2535;
-  box-shadow: 0 15px 50px #0007;
+  background: #ffffff;
+  box-shadow: 0 15px 50px #0067b31a;
   overflow: auto;
 }
 .config-panel > header {
@@ -17,8 +17,8 @@
   align-items: center;
   gap: 10px;
   padding: 12px 14px;
-  border-bottom: 1px solid #344359;
-  background: #202d40;
+  border-bottom: 1px solid #d5e3ef;
+  background: #ffffff;
 }
 .config-panel header > div {
   flex: 1;
@@ -42,17 +42,17 @@
   flex-direction: column;
   gap: 7px;
   font-size: 10px;
-  color: #a1b3cc;
+  color: #182443;
 }
 .field input,
 .field select,
 .field textarea {
   width: 100%;
-  background: #101a28;
-  border: 1px solid #35455e;
+  background: #ffffff;
+  border: 1px solid #d5e3ef;
   border-radius: 6px;
   padding: 9px 10px;
-  color: #d3e1f3;
+  color: #0067b3;
   font-size: 11px;
   min-width: 0;
 }
@@ -66,7 +66,7 @@
   opacity: 0.55;
 }
 .config-footnote {
-  color: #778faa;
+  color: #64748b;
   font-size: 9px;
   line-height: 1.8;
   display: flex;
@@ -79,20 +79,20 @@
 }
 .info-box {
   padding: 12px;
-  background: #0f1b2b;
+  background: #ffffff;
   border-radius: 6px;
-  color: #8ba0bb;
+  color: #64748b;
   font-size: 10px;
   line-height: 1.8;
 }
 .validation-note {
   padding: 10px;
-  border: 1px solid #edba6b30;
+  border: 1px solid #d5e3ef;
   border-radius: 6px;
-  background: #f5b85e08;
+  background: #e7f4ff;
   font-size: 10px;
   line-height: 1.7;
-  color: #e7b77e;
+  color: #0067b3;
 }
 .version-details {
   display: flex;
@@ -107,5 +107,5 @@
 }
 .version-details > p > span {
   font-size: 11px;
-  color: #91a8c6;
+  color: #182443;
 }

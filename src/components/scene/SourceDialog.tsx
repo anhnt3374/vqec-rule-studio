@@ -187,7 +187,7 @@ export function SourceDialog({
           </div>
         </form>
         {error && (
-          <p className="text-rose-300 text-xs" role="alert">
+          <p className="text-rose-700 text-xs" role="alert">
             {error}
           </p>
         )}

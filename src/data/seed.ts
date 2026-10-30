@@ -45,15 +45,15 @@ export function seed() {
   const rules: Rule[] = specs.map(([name, type, kind, status], i) => {
     const first = makeNode(
       kind,
-      { x: 70, y: 150 },
+      { x: 180, y: 40 },
       kind === "gate" ? "gate-entrance" : "zone-restricted",
     );
     const middle = makeNode(i === 2 ? "duration" : "category", {
-      x: 370,
-      y: 150,
+      x: 180,
+      y: 270,
     });
     if (i !== 2) middle.data.config.value = "Person";
-    const last = makeNode("event", { x: 670, y: 150 });
+    const last = makeNode("event", { x: 180, y: 500 });
     last.data.config.eventName = name;
     return {
       id: `rule-${i + 1}`,
@@ -69,6 +69,7 @@ export function seed() {
       cameraId: scene.id,
       version: 1,
       graph: {
+        layout: "vertical",
         nodes: [first, middle, last],
         edges: [
           {
