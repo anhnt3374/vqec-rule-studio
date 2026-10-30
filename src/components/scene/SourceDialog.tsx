@@ -1,3 +1,4 @@
+import { BoardSource } from "./BoardSource";
 import { useRef, useState } from "react";
 import { Upload, Radio, Image } from "lucide-react";
 import { useStudio } from "@/stores/studio";
@@ -78,6 +79,12 @@ export function SourceDialog({
       description="Use a local scene for drawing, or view the existing AI stream through its browser WHEP endpoint."
     >
       <div className="space-y-4">
+        <BoardSource
+          connect={(source) => {
+            connect(source);
+            onClose();
+          }}
+        />
         <div className="source-section">
           <span className="eyebrow">LOCAL SCENE</span>
           <p>Image or video · up to 20 MB · saved with the draft</p>

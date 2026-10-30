@@ -13,6 +13,36 @@ npm run dev
 
 Mở `http://localhost:5175`. Vite lắng nghe trên mạng LAN để xem từ máy khác. `npm run build` tạo `dist/`; `npm run preview` xem bản build. Khi triển khai thật, phục vụ `dist/` bằng static web server. Không cần dịch vụ của repo camera để vẽ và lưu cấu hình.
 
+## Chạy trên board QRB142
+
+Studio: **https://192.168.138.142:8444/**. Camera/API hiện hữu: **https://192.168.138.142:8443/**. Chấp nhận chứng chỉ development của thiết bị khi browser hỏi.
+
+Mở `Camera source` → nhập tài khoản camera hiện có → `Connect board AI`. Studio gọi API danh sách camera và metadata `streamType=AI` để nhận media grant, rồi phát video WebRTC. Không nhúng tài khoản/token trong asset hoặc lưu vào IndexedDB. Access token được làm mới trong bộ nhớ khi xem; đóng/ngắt kết nối/refresh sẽ đóng phiên Studio; refresh khôi phục rule đã lưu, và kết nối camera cần thực hiện lại.
+
+Endpoint video AI được xác nhận từ API:
+
+```text
+https://192.168.138.142:8443/api/v1/media/ai/whep
+```
+
+Đây là **WHEP/WebRTC**, không phải RTSP. Bản native AI đang chạy không mở listener RTSP 554/8554. Không dùng URL RTSP của service demo cũ để đại diện cho luồng native này.
+
+Build trên host và triển khai (SSH root đã cấu hình ngoài repo):
+
+```sh
+python3 tools/board/deploy.py
+```
+
+Script tạo release có manifest/hash dưới `/opt/vqec-rule-studio/releases/`, cập nhật symlink `current` và bật `vqec-rule-studio.service`. Board không cần Node/npm. Service Python chuẩn chỉ phục vụ static HTTPS và chuyển một danh sách endpoint hẹp sang API camera hiện có; không xử lý frame, không có DB, evaluator hoặc hệ thống tài khoản riêng. Chứng chỉ/key đọc tại đường dẫn thiết bị hiện có, không đóng gói trong repo. Cấu hình này dùng cho board dev/LAN.
+
+```sh
+systemctl status vqec-rule-studio.service
+systemctl stop vqec-rule-studio.service
+systemctl disable vqec-rule-studio.service
+```
+
+Studio autostart sau reboot; hai unit AI candidate hiện hữu là runtime unit, giữ cơ chế quản lý riêng của repo camera. Gateway không tự khởi động/chuyển phiên bản camera. Chạy `node tools/board/verify.mjs` trên host để kiểm AI live + vẽ/lưu/reload; credential đọc từ file private ngoài repo, không in ra. Có thể chạy `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests/board` để kiểm các route gateway được phép.
+
 ## Bố cục và thao tác
 
 Chỉ ba cột: Rules/Operators, Graph, Camera. Không có menu hệ thống hoặc inspector thứ tư. Kéo hai vạch ngăn để resize; có thể dùng Tab rồi phím trái/phải. Giới hạn tối thiểu lần lượt 220/400/320 px; cửa sổ hẹp cuộn ngang. Khung camera chỉ có header tên, subheader filter và preview; công cụ, danh sách object mở nổi trong khung camera.
@@ -33,7 +63,7 @@ Scene SVG minh họa được đóng gói cùng ứng dụng, không phải ản
 
 Toàn bộ tọa độ là `[0,1]`. Ảnh/video và SVG overlay dùng chung hình chữ nhật có aspect ratio nguồn, letterbox trong camera. Resize không đổi tọa độ và không vẽ trực tiếp lên ảnh. Chọn node làm nổi Gate/Zone; chọn scene object làm nổi các node tham chiếu. Đối tượng không dùng được làm mờ; All bỏ làm mờ. Geometry chỉ sửa trong Edit của Custom Rule.
 
-Có client **WHEP tùy chọn** để xem AI stream của service hiện hữu chạy song song. Nhập URL endpoint WHEP và media token nếu endpoint yêu cầu. Token/URL kết nối chỉ giữ trong bộ nhớ, không lưu vào draft/IndexedDB. Browser không phát RTSP; không có RTSP proxy trong repo này. Endpoint cần được service hiện hữu cấp quyền, CORS và chứng chỉ hợp lệ; HTTPS parent cần HTTPS media. Không có tự đăng nhập hoặc tự lấy media grant. Chưa nghiệm thu live AI stream trên board cho app mới; các test dùng scene cục bộ. Không thay FE/backend hoặc dịch vụ camera.
+Có client **WHEP tùy chọn** để xem AI stream của service hiện hữu chạy song song. Nhập URL endpoint WHEP và media token nếu endpoint yêu cầu. Token/URL kết nối chỉ giữ trong bộ nhớ, không lưu vào draft/IndexedDB. Browser không phát RTSP; không có RTSP proxy trong repo này. Endpoint cần được service hiện hữu cấp quyền, CORS và chứng chỉ hợp lệ; HTTPS parent cần HTTPS media. Không có tự đăng nhập hoặc tự lấy media grant. Đã kiểm live AI trên QRB142 qua gateway của Studio; xem `docs/verification.md`. Không thay FE/backend hoặc dịch vụ camera.
 
 Sau này có thể nhúng bằng iframe:
 
@@ -92,4 +122,4 @@ Unit test kiểm save/restore, Draft/Published, Cancel, geometry dùng chung, sp
 
 ## Giới hạn
 
-Desktop prototype, minimum workspace khoảng 1000 px; không tối ưu touch/mobile. Chưa hỗ trợ undo sau reload, đồng bộ nhiều tab/máy, export/import hoặc migration sang schema backend. IndexedDB bị mất khi người dùng xóa site data, dùng chế độ riêng tư hoặc browser thu hồi storage; không thay thế backup. Chưa có live board acceptance, WHEP token broker, automatic reconnect hoặc RTSP conversion. Không có rule execution, notification/event engine, inference, tracking hoặc nhận diện. Geometry dùng chung có thể ảnh hưởng preview của nhiều rule, kể cả snapshot đã Published, theo thiết kế tham chiếu ID.
+Desktop prototype, minimum workspace khoảng 1000 px; không tối ưu touch/mobile. Chưa hỗ trợ undo sau reload, đồng bộ nhiều tab/máy, export/import hoặc migration sang schema backend. IndexedDB bị mất khi người dùng xóa site data, dùng chế độ riêng tư hoặc browser thu hồi storage; không thay thế backup. Live WHEP trên board đã kiểm; chưa có automatic reconnect hoặc RTSP conversion. Không có rule execution, notification/event engine, inference, tracking hoặc nhận diện. Geometry dùng chung có thể ảnh hưởng preview của nhiều rule, kể cả snapshot đã Published, theo thiết kế tham chiếu ID.

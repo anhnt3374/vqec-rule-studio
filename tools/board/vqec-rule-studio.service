@@ -1,0 +1,23 @@
+[Unit]
+Description=VQEC standalone Rule Studio
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Environment=PYTHONDONTWRITEBYTECODE=1
+WorkingDirectory=/opt/vqec-rule-studio/current/dist
+ExecStart=/usr/bin/python3 /opt/vqec-rule-studio/current/tools/serve.py --root /opt/vqec-rule-studio/current/dist --cert /etc/vqec-vision/tls/cert.pem --key /etc/vqec-vision/tls/key.pem --upstream 192.168.138.142:8443 --port 8444
+Restart=on-failure
+RestartSec=3
+MemoryMax=96M
+TasksMax=64
+LimitNOFILE=256
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

@@ -69,7 +69,7 @@ export function SceneEditor() {
         <Camera size={19} />
         <div className="min-w-0 flex-1">
           <span className="eyebrow">CAMERA SCENE</span>
-          <h2 className="truncate">{s.scene.name}</h2>
+          <h2 className="truncate">{source?.cameraName ?? s.scene.name}</h2>
         </div>
         <span
           className={`scene-source-indicator ${stream ? "online" : ""}`}

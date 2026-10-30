@@ -1,7 +1,11 @@
+import { watchCameraSession } from "@/features/camera/session";
 import { useEffect, useState } from "react";
 export interface WhepSource {
   url: string;
   token: string;
+  sessionAccess?: string;
+  sessionRefresh?: string;
+  cameraName?: string;
 }
 export function useWhep(source: WhepSource | null) {
   const [stream, setStream] = useState<MediaStream | null>(null),
@@ -104,7 +108,12 @@ export function useWhep(source: WhepSource | null) {
       }
     }
     void connect();
+    const stopSession = watchCameraSession(
+      source.sessionAccess,
+      source.sessionRefresh,
+    );
     return () => {
+      stopSession();
       disposed = true;
       clearTimeout(timer);
       controller.abort();

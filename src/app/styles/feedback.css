@@ -133,3 +133,8 @@
 .spatial-label {
   font-size: 10px;
 }
+
+.dialog-content {
+  max-height: 92dvh;
+  overflow-y: auto;
+}
