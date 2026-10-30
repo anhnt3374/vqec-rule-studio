@@ -1,0 +1,135 @@
+.toast {
+  position: fixed;
+  z-index: 60;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: max-content;
+  max-width: min(560px, 90vw);
+  padding: 15px;
+  border-radius: 10px;
+  background: #142c2b;
+  border: 1px solid #3e8c7c;
+  color: #61d5b6;
+  box-shadow: 0 10px 50px #0008;
+}
+.toast.error {
+  background: #30281e;
+  border-color: #a1773e;
+  color: #ebbd7b;
+}
+.toast > svg {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+.toast strong {
+  font-size: 12px;
+  font-weight: 600;
+  color: #d1e3e0;
+}
+.toast.error strong {
+  color: #f0d5af;
+}
+.toast p {
+  font-size: 11px;
+  white-space: pre-line;
+  line-height: 1.7;
+  margin: 5px 0;
+  max-height: 230px;
+  overflow: auto;
+}
+.loading {
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 15px;
+  color: #87a3bf;
+  background: #101722;
+  font-size: 13px;
+}
+@media (max-width: 1250px) {
+  .workspace {
+    padding: 8px;
+  }
+  .panel-header {
+    padding: 12px;
+    gap: 7px;
+  }
+  .nav-body {
+    padding: 18px 12px;
+  }
+  .operator-title small {
+    display: none;
+  }
+  .graph-toolbar {
+    padding: 8px 10px;
+  }
+  .graph-toolbar button {
+    font-size: 10px;
+    padding-inline: 7px;
+  }
+  .graph-footer {
+    font-size: 8px;
+  }
+  .graph-footer > span:last-child {
+    display: none;
+  }
+  .scene-filters {
+    gap: 2px;
+    padding: 10px 8px;
+  }
+  .scene-filters > .filter-label {
+    display: none;
+  }
+  .empty-steps {
+    gap: 8px;
+  }
+  .empty-steps i {
+    width: 20px;
+  }
+  .graph-header .status {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.react-flow.dark {
+  --xy-background-color: #101722;
+  --xy-background-color-default: #101722;
+}
+.operator-node > strong {
+  font-size: 14px;
+}
+.operator-node > p {
+  font-size: 11px;
+}
+.node-category {
+  font-size: 10px;
+}
+.node-config {
+  font-size: 10px;
+}
+.operator-title {
+  font-size: 12px;
+}
+.operator-title small {
+  font-size: 9px;
+}
+.library-hint {
+  font-size: 11px;
+}
+.spatial-label {
+  font-size: 10px;
+}

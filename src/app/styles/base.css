@@ -1,0 +1,138 @@
+@theme inline {
+  --font-sans: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+:root {
+  font-family: var(--font-sans);
+  color: #d7e0ed;
+  background: #0b1018;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  color-scheme: dark;
+  font-size: 13px;
+  --line: #283140;
+  --muted: #7f8ca2;
+  --sky: #38bdf8;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+}
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 3px;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 1px solid #38bdf8;
+  border-color: #38bdf8;
+}
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-thumb {
+  background: #344157;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+.workspace {
+  height: 100dvh;
+  min-height: 600px;
+  min-width: 1000px;
+  display: grid;
+  padding: 12px;
+  gap: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at top left, #18243380, transparent 55%), #0b1018;
+}
+.column {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #2b3545;
+  border-radius: 12px;
+  background: #151c27;
+  position: relative;
+  box-shadow: 0 4px 24px #0002;
+}
+.splitter {
+  display: grid;
+  place-items: center;
+  cursor: col-resize;
+  touch-action: none;
+}
+.splitter span {
+  width: 2px;
+  height: 28px;
+  background: #303d50;
+  border-radius: 2px;
+}
+.splitter:hover span,
+.splitter:focus span {
+  background: #38bdf8;
+  height: 45px;
+}
+.panel-header {
+  height: 78px;
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+  background: #19212e;
+}
+.panel-header h1,
+.panel-header h2 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.7;
+  margin: 0;
+  letter-spacing: -0.2px;
+  color: #e9f0f9;
+}
+.eyebrow {
+  display: block;
+  letter-spacing: 1.7px;
+  font-size: 9px;
+  line-height: 1.8;
+  font-weight: 600;
+  color: #8493aa;
+}
+.brand-icon {
+  display: grid;
+  place-items: center;
+  width: 37px;
+  height: 39px;
+  border-radius: 9px;
+  background: #38bdf814;
+  color: #58c8fb;
+  border: 1px solid #38bdf82a;
+}
+.version {
+  color: #65758c;
+  font-weight: 400;
+  font-size: 11px;
+}

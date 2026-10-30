@@ -1,0 +1,222 @@
+.graph-column {
+  background: #101722;
+}
+.graph-heading {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+.graph-heading > svg {
+  color: #829cba;
+  flex-shrink: 0;
+}
+.graph-heading > div {
+  min-width: 0;
+}
+.graph-heading h2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.graph-header {
+  gap: 8px;
+}
+.mode-badge {
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #8fa3bc;
+  border: 1px solid #364357;
+  border-radius: 4px;
+  padding: 3px 5px;
+}
+.mode-badge.edit {
+  color: #63ccf6;
+  border-color: #2b6a89;
+  background: #38bdf810;
+}
+.graph-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #293346;
+  background: #141d29;
+  flex-wrap: wrap;
+  z-index: 4;
+}
+.canvas-label,
+.locked-label {
+  font-size: 10px;
+  color: #8296b0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+.canvas-label > span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #43cdb1;
+}
+.locked-label {
+  color: #bba3f1;
+}
+.toolbar-divider {
+  height: 20px;
+  width: 1px;
+  background: #34415a;
+  margin: 0 6px;
+}
+.graph-canvas {
+  position: relative;
+  min-height: 0;
+  flex: 1;
+}
+.react-flow {
+  background: #101722;
+}
+.react-flow__attribution {
+  background: transparent !important;
+  color: #65758e !important;
+  font-size: 8px !important;
+}
+.react-flow__controls {
+  box-shadow: 0 4px 14px #0004 !important;
+  overflow: hidden;
+  border: 1px solid #354256;
+  border-radius: 7px;
+  margin: 20px !important;
+}
+.react-flow__controls-button {
+  background: #1c2737 !important;
+  border-bottom: 1px solid #354256 !important;
+  color: #9fb5d1 !important;
+  width: 28px !important;
+  height: 28px !important;
+}
+.react-flow__controls-button svg {
+  fill: currentColor !important;
+}
+.react-flow__minimap {
+  background: #151f2e !important;
+  border: 1px solid #303e54;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 125px !important;
+  height: 80px !important;
+  margin: 20px !important;
+}
+.react-flow__edge.selected path {
+  stroke: #38bdf8 !important;
+  stroke-width: 3 !important;
+}
+.react-flow__edge-interaction {
+  stroke-width: 18;
+}
+.canvas-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  pointer-events: none;
+  text-align: center;
+  padding: 30px 50px 90px;
+}
+.empty-graph-icon {
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  color: #5a8aa8;
+  border: 1px solid #2f465b;
+  border-radius: 20px;
+  background: #1c304236;
+  margin-bottom: 27px;
+  box-shadow: 0 0 55px #38bdf809;
+}
+.canvas-empty .eyebrow {
+  font-size: 8px;
+  color: #6585a1;
+  letter-spacing: 2.5px;
+}
+.canvas-empty h2 {
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -0.6px;
+  line-height: 1.4;
+  color: #b6c8dd;
+  max-width: 350px;
+  margin: 14px 0;
+}
+.canvas-empty p {
+  font-size: 11px;
+  line-height: 1.9;
+  color: #647d99;
+  max-width: 320px;
+  margin: 0;
+}
+.empty-steps {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 32px;
+  font-size: 9px;
+  color: #5e8ca9;
+}
+.empty-steps span {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.empty-steps small {
+  font-size: 8px;
+  color: #71829a;
+}
+.empty-steps i {
+  height: 1px;
+  width: 30px;
+  background: #2d4357;
+  margin-bottom: 13px;
+}
+.graph-footer,
+.scene-footer {
+  height: 37px;
+  min-height: 37px;
+  border-top: 1px solid #283346;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 14px;
+  background: #141c27;
+  font-size: 9px;
+  color: #6d839f;
+}
+.graph-footer > span,
+.scene-footer > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.selection-tools {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 22px;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: #1b2738;
+  border: 1px solid #3b4b65;
+  box-shadow: 0 6px 24px #0005;
+  border-radius: 7px;
+  z-index: 5;
+  white-space: nowrap;
+}

@@ -1,0 +1,111 @@
+.config-panel {
+  position: absolute;
+  z-index: 8;
+  top: 16px;
+  right: 16px;
+  width: 280px;
+  max-width: calc(100% - 32px);
+  max-height: calc(100% - 32px);
+  border: 1px solid #415571;
+  border-radius: 10px;
+  background: #1a2535;
+  box-shadow: 0 15px 50px #0007;
+  overflow: auto;
+}
+.config-panel > header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #344359;
+  background: #202d40;
+}
+.config-panel header > div {
+  flex: 1;
+}
+.config-panel h3 {
+  font-size: 12px;
+  font-weight: 600;
+}
+.config-panel .eyebrow {
+  font-size: 7px;
+  letter-spacing: 1.1px;
+}
+.config-fields {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 10px;
+  color: #a1b3cc;
+}
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  background: #101a28;
+  border: 1px solid #35455e;
+  border-radius: 6px;
+  padding: 9px 10px;
+  color: #d3e1f3;
+  font-size: 11px;
+  min-width: 0;
+}
+.field textarea {
+  resize: vertical;
+  min-height: 75px;
+}
+.field input:disabled,
+.field select:disabled,
+.field textarea:disabled {
+  opacity: 0.55;
+}
+.config-footnote {
+  color: #778faa;
+  font-size: 9px;
+  line-height: 1.8;
+  display: flex;
+  gap: 5px;
+  align-items: flex-start;
+}
+.config-footnote svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.info-box {
+  padding: 12px;
+  background: #0f1b2b;
+  border-radius: 6px;
+  color: #8ba0bb;
+  font-size: 10px;
+  line-height: 1.8;
+}
+.validation-note {
+  padding: 10px;
+  border: 1px solid #edba6b30;
+  border-radius: 6px;
+  background: #f5b85e08;
+  font-size: 10px;
+  line-height: 1.7;
+  color: #e7b77e;
+}
+.version-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.version-details > p {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.version-details > p > span {
+  font-size: 11px;
+  color: #91a8c6;
+}
