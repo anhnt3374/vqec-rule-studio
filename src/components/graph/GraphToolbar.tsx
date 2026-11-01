@@ -1,3 +1,4 @@
+import { RuntimePanel } from "./RuntimePanel";
 import { useState } from "react";
 import {
   Pencil,
@@ -50,6 +51,7 @@ export function GraphToolbar() {
           </>
         )}
       </header>
+      <RuntimePanel />
       <div className="graph-toolbar">
         <div className="flex items-center gap-1">
           {active?.type === "System" ? (
@@ -197,7 +199,7 @@ export function GraphToolbar() {
             </span>
           </p>
           <p className="text-slate-500 text-xs">
-            Publishing only stores configuration. No event processing runs.
+            Publish activates the supported attendance graph on the device. Local drafts do not change the active rule.
           </p>
         </div>
       </Dialog>

@@ -6,6 +6,7 @@ export default defineConfig({
     baseURL: "http://127.0.0.1:5175",
     viewport: { width: 1600, height: 1000 },
     headless: true,
+    launchOptions: process.env.PLAYWRIGHT_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH } : {},
   },
   webServer: {
     command: "npm run dev",

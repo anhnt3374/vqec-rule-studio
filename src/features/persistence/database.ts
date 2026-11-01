@@ -1,3 +1,4 @@
+import { normalizeSystemAttendance } from "@/features/runtime/attendance";
 import Dexie, { type EntityTable } from "dexie";
 import type {
   Rule,
@@ -46,7 +47,7 @@ export async function loadWorkspace() {
     },
   );
   return {
-    rules: (await db.rules.toArray()).map(verticalRule),
+    rules: (await db.rules.toArray()).map(verticalRule).map(normalizeSystemAttendance),
     scene: (await db.scenes.toArray())[0],
     published: await db.published.toArray(),
   };

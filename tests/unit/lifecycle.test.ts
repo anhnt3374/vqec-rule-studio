@@ -1,7 +1,8 @@
-import { beforeEach, describe, it, expect } from "vitest";
+import { beforeEach, describe, it, expect, vi } from "vitest";
 import { db, loadWorkspace } from "@/features/persistence/database";
 import { useStudio } from "@/stores/studio";
 import type { SpatialObject } from "@/models/types";
+vi.mock("@/features/runtime/store",()=>({publishAttendance:vi.fn(async()=>({activeVersion:2}))}));
 const gate: SpatialObject = {
   id: "shared-gate",
   name: "Shared entrance",
@@ -56,7 +57,7 @@ describe("local configuration lifecycle", () => {
     studio().open("rule-1");
     const original = await db.published.get("rule-1");
     studio().edit();
-    const node = studio().active!.graph.nodes[0];
+    const node = studio().active!.graph.nodes.find(n=>n.data.kind==="gate")!;
     studio().config(node.id, { ...node.data.config, direction: "Negative" });
     expect(studio().active!.status).toBe("Unsaved");
     expect(studio().published.find((p) => p.ruleId === "rule-1")).toEqual(
@@ -65,12 +66,12 @@ describe("local configuration lifecycle", () => {
     await studio().save(false, true);
     expect(await db.published.get("rule-1")).toEqual(original);
     expect(
-      (await db.drafts.get("rule-1"))!.rule.graph.nodes[0].data.config
+      (await db.drafts.get("rule-1"))!.rule.graph.nodes.find(n=>n.data.kind==="gate")!.data.config
         .direction,
     ).toBe("Negative");
     await studio().save(true);
     expect(
-      (await db.published.get("rule-1"))!.rule.graph.nodes[0].data.config
+      (await db.published.get("rule-1"))!.rule.graph.nodes.find(n=>n.data.kind==="gate")!.data.config
         .direction,
     ).toBe("Negative");
   });
@@ -148,7 +149,7 @@ describe("spatial references and restrictions", () => {
     studio().spatialDrop(gate.id, { x: 5, y: 7 });
     expect(studio().active!.graph.nodes[0].data.kind).toBe("gate");
     expect(studio().active!.graph.nodes[0].position).toEqual({ x: 5, y: 7 });
-    expect(studio().active!.graph.nodes[0].data.config.spatialId).toBe(gate.id);
+    expect(studio().active!.graph.nodes.find(n=>n.data.kind==="gate")!.data.config.spatialId).toBe(gate.id);
     studio().updateObject({ ...gate, name: "Updated shared entrance" });
     await studio().save();
     expect(
@@ -182,7 +183,7 @@ describe("spatial references and restrictions", () => {
     studio().graph({ nodes: [], edges: [] });
     studio().addObject(gate);
     studio().rename("Invalid", "Invalid");
-    const node = graph.nodes[0];
+    const node = graph.nodes.find(n=>n.data.kind==="gate")!;
     studio().config(node.id, {
       name: "Invalid",
       spatialId: "gate-entrance",
@@ -192,7 +193,7 @@ describe("spatial references and restrictions", () => {
     expect(studio().active!.name).toBe("Attendance");
     expect(studio().active!.graph.nodes).toHaveLength(3);
     expect(studio().active!.graph.edges).toEqual(graph.edges);
-    expect(studio().active!.graph.nodes[0].data.config).toEqual({
+    expect(studio().active!.graph.nodes.find(n=>n.data.kind==="gate")!.data.config).toEqual({
       ...node.data.config,
       direction: "Negative",
     });

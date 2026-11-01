@@ -71,6 +71,7 @@ export function validateRule(
   }
   for (const node of rule.graph.nodes) {
     if (
+      !["category", "gate", "zone", "movement"].includes(node.data.kind) &&
       definition(node.data.kind).input &&
       !rule.graph.edges.some((e) => e.target === node.id)
     )

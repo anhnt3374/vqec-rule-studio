@@ -1,3 +1,4 @@
+import { useRuntime } from "@/features/runtime/store";
 import { useState, useCallback } from "react";
 import {
   ReactFlow,
@@ -30,6 +31,7 @@ import type { OperatorKind } from "@/models/types";
 import { useShortcuts } from "@/hooks/useShortcuts";
 const nodeTypes = { operator: OperatorNode };
 function Canvas() {
+  const runtime = useRuntime(s=>s.status);
   const s = useStudio(),
     flow = useReactFlow(),
     [edgeId, setEdgeId] = useState<string | null>(null);
@@ -132,6 +134,12 @@ function Canvas() {
             ...e,
             selected: e.id === edgeId,
             type: "smoothstep",
+            label: runtime && s.active?.type === "System" ?
+              (graph?.nodes.find(n=>n.id===e.source)?.data.kind === "category" ?
+                runtime.available ? `${runtime.categoryCount} now` : "— stale" : `${runtime.crossingCount} crossings`) : "—",
+            labelStyle: {fontSize:12,fontWeight:700,fill:"#005b94"},
+            labelBgStyle: {fill:"#fff",stroke:"#9bbdd3"},
+            labelBgPadding:[8,4],
           }))}
           nodeTypes={nodeTypes}
           onNodesChange={onNodesChange}

@@ -1,3 +1,4 @@
+import { setRuntimeAccess } from "@/features/runtime/store";
 // The camera owns authentication. Keep only this viewer's session in memory.
 export function watchCameraSession(access?: string, refresh?: string) {
   if (!access) return () => {};
@@ -20,6 +21,7 @@ export function watchCameraSession(access?: string, refresh?: string) {
       const { details } = (await response.json()) as {
         details: { accessToken: string; refreshToken: string };
       };
+      setRuntimeAccess(details.accessToken);
       token = details.accessToken;
       renewal = details.refreshToken;
     })();
@@ -51,6 +53,7 @@ export function watchCameraSession(access?: string, refresh?: string) {
   const stop = () => {
     if (stopped) return;
     stopped = true;
+    setRuntimeAccess(null, token);
     if (timer !== null) clearInterval(timer);
     window.removeEventListener("pagehide", stop);
     void (async () => {

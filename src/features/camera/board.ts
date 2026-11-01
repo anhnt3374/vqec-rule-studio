@@ -1,3 +1,4 @@
+import { setRuntimeAccess } from "@/features/runtime/store";
 import type { WhepSource } from "@/hooks/useWhep";
 interface Envelope<T> {
   details: T;
@@ -59,6 +60,7 @@ export async function connectBoard(
     const url = new URL(media.whepUrl, location.origin);
     if (media.streamType !== "AI" || url.origin !== location.origin)
       throw new Error("Camera did not return a local AI stream.");
+    setRuntimeAccess(session.accessToken);
     return {
       url: url.href,
       token: media.mediaToken,

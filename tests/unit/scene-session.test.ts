@@ -61,7 +61,7 @@ describe("independent shared scene authoring", () => {
     s().updateObject({ ...s().scene!.objects[0], name: "Updated entrance" });
     await s().saveScene();
     expect(s().active!.graph).toEqual(graph);
-    expect(s().active!.status).toBe("Published");
+    expect(s().active!.status).toBe("Draft");
     expect(await db.published.get("rule-1")).toEqual(published);
     expect((await loadWorkspace()).scene.objects[0].name).toBe(
       "Updated entrance",

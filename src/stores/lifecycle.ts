@@ -1,3 +1,4 @@
+import { publishAttendance } from "@/features/runtime/store";
 import type { StudioSlice } from "./types";
 import type { Rule } from "@/models/types";
 import {
@@ -21,6 +22,7 @@ export const lifecycle: StudioSlice<
     try {
       const data = await loadWorkspace();
       set({ ...data, ready: true, error: "" });
+
     } catch {
       set({
         error: "Cannot open local storage. Enable IndexedDB and reload.",
@@ -128,6 +130,7 @@ export const lifecycle: StudioSlice<
       updatedAt: new Date().toISOString(),
     } as Rule);
     try {
+      if (publish) await publishAttendance(rule, scene);
       await persist(rule, clone(scene), publish);
       const rules = get()
         .rules.filter((r) => r.id !== rule.id)
@@ -152,14 +155,13 @@ export const lifecycle: StudioSlice<
         future: [],
         busy: false,
         notice: publish
-          ? "Published locally. Snapshot saved."
+          ? "Applied on device. Active runtime version acknowledged."
           : "Draft and scene saved on this browser.",
       });
-    } catch {
+    } catch (error) {
       set({
         busy: false,
-        error:
-          "Save failed. Your working copy is still available. Check browser storage space.",
+        error: error instanceof Error ? error.message : "Save failed; working copy retained.",
       });
     }
   },

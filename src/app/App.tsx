@@ -9,7 +9,11 @@ export function App() {
     notice = useStudio((s) => s.notice),
     dirty = useStudio((s) => s.dirty || s.sceneDirty);
   useEffect(() => {
-    void useStudio.getState().init();
+    void useStudio.getState().init().then(()=>{
+      const state=useStudio.getState();
+      const rule=state.rules.find(r=>r.type==="System");
+      if(rule) state.open(rule.id);
+    });
   }, []);
   useEffect(() => {
     if (!notice) return;

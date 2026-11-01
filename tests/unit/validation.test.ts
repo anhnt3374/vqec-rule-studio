@@ -31,7 +31,7 @@ describe("structural validation", () => {
   });
   it("rejects wrong spatial object type", () => {
     const { rules, scene } = seed();
-    rules[0].graph.nodes[0].data.config.spatialId = "zone-restricted";
+    rules[0].graph.nodes.find(n=>n.data.kind==="gate")!.data.config.spatialId = "zone-restricted";
     expect(validateRule(rules[0], scene)[0]).toContain("choose a valid gate");
   });
   it("detects system structure tampering", () => {
@@ -51,7 +51,7 @@ describe("normalized geometry", () => {
     expect(moved.geometry.points[1].x).toBe(1);
     expect(moved.geometry.points[0].y).toBe(0);
     expect(moved.geometry.points[1].x - moved.geometry.points[0].x).toBeCloseTo(
-      0.54,
+      0.8,
     );
   });
   it("normalizes pointers independently of display dimensions", () => {

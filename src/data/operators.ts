@@ -43,7 +43,7 @@ export const operators: OperatorDefinition[] = Object.entries(groups).flatMap(
       description,
       category: category as OperatorDefinition["category"],
       color: colors[category as keyof typeof colors],
-      input: kind !== "gate" && kind !== "zone" && kind !== "movement",
+      input: true,
       output: kind !== "event",
     })),
 );

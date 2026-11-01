@@ -4,7 +4,7 @@ import { GraphWorkspace } from "@/components/graph/GraphWorkspace";
 import { SceneEditor } from "@/components/scene/SceneEditor";
 export function Workspace() {
   const root = useRef<HTMLDivElement>(null),
-    [columns, setColumns] = useState([20, 50, 30]);
+    [columns, setColumns] = useState([45, 20, 35]);
   function resize(e: PointerEvent<HTMLDivElement>, index: number) {
     e.currentTarget.setPointerCapture(e.pointerId);
     const start = e.clientX,
@@ -14,7 +14,7 @@ export function Workspace() {
     const move = (event: globalThis.PointerEvent) => {
       const delta = ((event.clientX - start) / width) * 100,
         next = [...initial],
-        minimum = [220, 400, 320].map((v) => (v / width) * 100);
+        minimum = [400, 200, 360].map((v) => (v / width) * 100);
       const amount = Math.max(
         minimum[index] - initial[index],
         Math.min(delta, initial[index + 1] - minimum[index + 1]),
@@ -49,7 +49,7 @@ export function Workspace() {
         const next = [...columns],
           delta = e.key === "ArrowLeft" ? -1 : 1,
           width = root.current!.clientWidth,
-          min = [220, 400, 320].map((v) => (v / width) * 100);
+          min = [400, 200, 360].map((v) => (v / width) * 100);
         if (
           next[index] + delta >= min[index] &&
           next[index + 1] - delta >= min[index + 1]
@@ -68,14 +68,14 @@ export function Workspace() {
       ref={root}
       className="workspace"
       style={{
-        gridTemplateColumns: `minmax(220px,${columns[0]}fr) 8px minmax(400px,${columns[1]}fr) 8px minmax(320px,${columns[2]}fr)`,
+        gridTemplateColumns: `minmax(400px,${columns[0]}fr) 8px minmax(200px,${columns[1]}fr) 8px minmax(360px,${columns[2]}fr)`,
       }}
     >
-      <Navigation />
-      {splitter(0)}
-      <GraphWorkspace />
-      {splitter(1)}
       <SceneEditor />
+      {splitter(0)}
+      <Navigation />
+      {splitter(1)}
+      <GraphWorkspace />
     </main>
   );
 }
