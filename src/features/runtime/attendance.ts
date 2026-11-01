@@ -9,7 +9,7 @@ export function compileAttendance(rule: Rule, scene: CameraScene) {
       !edges.some(e => e.source === gate.id && e.target === event.id))
     throw new Error('Runtime supports Category → Gate → Attendance only.');
   const values = (category.data.config.value ?? '').toLowerCase().split(/[|,]/).map(v => v.trim());
-  if (category.data.config.comparison !== 'equals' || !values.length ||
+  if (category.data.config.property !== 'category' || category.data.config.comparison !== 'equals' || !values.length ||
       values.some(v => !['person', 'pedestrian'].includes(v)))
     throw new Error('Attendance category must be person or pedestrian.');
   if (event.data.config.eventName?.toLowerCase() !== 'attendance')

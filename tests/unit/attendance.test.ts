@@ -27,6 +27,11 @@ describe('attendance runtime contract', () => {
     rules[0].graph.nodes[0].data.config.value = 'Car';
     expect(() => compileAttendance(rules[0], scene)).toThrow();
   });
+  it('rejects a category node with a mismatched metadata key', () => {
+    const { scene, rules } = seed();
+    rules[0].graph.nodes[0].data.config.property = 'identity';
+    expect(() => compileAttendance(rules[0], scene)).toThrow();
+  });
   it('rejects unconnected graph', () => {
     const { scene, rules } = seed();
     rules[0].graph.edges = [];
