@@ -135,3 +135,28 @@ Unit test kiểm save/restore, Draft/Published, Cancel, geometry dùng chung, sp
 ## Giới hạn
 
 Desktop prototype, minimum workspace khoảng 1000 px; không tối ưu touch/mobile. Chưa hỗ trợ undo sau reload, đồng bộ nhiều tab/máy, export/import hoặc migration sang schema backend. IndexedDB bị mất khi người dùng xóa site data, dùng chế độ riêng tư hoặc browser thu hồi storage; không thay thế backup. Live WHEP trên board đã kiểm; chưa có automatic reconnect hoặc RTSP conversion. Không có rule execution, notification/event engine, inference, tracking hoặc nhận diện. Geometry dùng chung có thể ảnh hưởng preview của nhiều rule, kể cả snapshot đã Published, theo thiết kế tham chiếu ID.
+
+## Attendance device runtime (01/11/2026)
+
+The fixed system graph is Category person/pedestrian → directed Gate → Attendance.
+Camera is on the left, the operator library in the middle, and the graph on the
+right. Edge badges show current category membership and cumulative crossings.
+Old fixed Gate→Category documents are normalized without rewriting published history.
+
+Drafts remain browser-local. Publish validates this supported subset, sends
+`PUT /api/v1/rules/attendance`, and waits for the active runtime version ACK.
+Other graphs remain authoring-only and are rejected by runtime compilation.
+Telemetry shows logic latency, spool and delivery separately; the browser does
+not execute attendance logic. Device runtime configuration is currently volatile
+and resets to default on media restart; local Published is not durable board config.
+
+Deploy the built dist with the application attendance package, which supplies
+`studio-config.json` with `boardApi:true`. Open `/rules.html` for the iframe or
+`/rule-studio/index.html` directly. Source → Connect board AI uses an existing
+onboarded camera account; session tokens stay in memory. WebRTC needs a reachable
+QDC route independently of HTTPS. No camera FE source changes are required.
+
+Checks: `npm test`, `npm run build`, and
+`npx playwright test -c config/playwright.config.ts tests/e2e/attendance-runtime.spec.ts`.
+Set `PLAYWRIGHT_EXECUTABLE_PATH` to an existing Chromium when needed. The browser
+contract test mocks API replies; it does not certify QDC video or inference.
