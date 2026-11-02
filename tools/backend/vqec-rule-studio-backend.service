@@ -1,0 +1,25 @@
+[Unit]
+Description=VQEC Rule Studio native analysis and configuration owner
+After=local-fs.target
+
+[Service]
+Type=simple
+ExecStart=/opt/vqec-rule-studio/current/bin/vqec-rule-studio-backend /run/vqec-rule-studio /var/lib/vqec-rule-studio/attendance.sqlite3
+RuntimeDirectory=vqec-rule-studio
+RuntimeDirectoryMode=0700
+StateDirectory=vqec-rule-studio
+StateDirectoryMode=0700
+UMask=0077
+Restart=on-failure
+RestartSec=2
+TimeoutStopSec=10
+MemoryMax=32M
+TasksMax=8
+LimitNOFILE=64
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+
+[Install]
+WantedBy=multi-user.target
