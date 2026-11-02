@@ -7,7 +7,7 @@ Wants=network-online.target
 Type=simple
 Environment=PYTHONDONTWRITEBYTECODE=1
 WorkingDirectory=/opt/vqec-rule-studio/current/dist
-ExecStart=/usr/bin/python3 /opt/vqec-rule-studio/current/tools/serve.py --root /opt/vqec-rule-studio/current/dist --cert /etc/vqec-vision/tls/cert.pem --key /etc/vqec-vision/tls/key.pem --upstream 192.168.138.142:8443 --port 8444
+ExecStart=/usr/bin/python3 /opt/vqec-rule-studio/current/tools/serve.py --root /opt/vqec-rule-studio/current/dist --cert /etc/vqec-vision/tls/cert.pem --key /etc/vqec-vision/tls/key.pem --upstream 192.168.138.142:443 --port 8444
 Restart=on-failure
 RestartSec=3
 MemoryMax=96M

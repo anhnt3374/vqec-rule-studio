@@ -17,6 +17,8 @@ def allowed(method, target):
     path = url.path
     if method == 'POST' and path in ('/api/v1/auth/login', '/api/v1/auth/logout', '/api/v1/auth/refresh'):
         return not url.query
+    if method in ('GET', 'PUT') and path == '/api/v1/rules/attendance':
+        return not url.query
     if method == 'GET' and path == '/api/v1/cameras':
         return not url.query
     if method == 'GET' and re.fullmatch(r'/api/v1/cameras/[a-f0-9-]{36}/live-stream', path):
@@ -45,6 +47,9 @@ class Handler(SimpleHTTPRequestHandler):
             super().do_GET()
 
     def do_POST(self):
+        self.proxy()
+
+    def do_PUT(self):
         self.proxy()
 
     def do_DELETE(self):

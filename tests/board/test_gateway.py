@@ -20,6 +20,15 @@ class GatewayRoutes(unittest.TestCase):
             self.assertFalse(module.allowed('POST', path))
         self.assertFalse(module.allowed('DELETE', '/api/v1/cameras'))
 
+    def test_attendance_read_publish_only(self):
+        path = '/api/v1/rules/attendance'
+        for method in ('GET', 'PUT'):
+            self.assertTrue(module.allowed(method, path))
+            self.assertFalse(module.allowed(method, path + '?other=1'))
+            self.assertFalse(module.allowed(method, '/api/v1/rules/other'))
+        for method in ('POST', 'DELETE', 'PATCH'):
+            self.assertFalse(module.allowed(method, path))
+
     def test_only_session_cleanup_is_allowed(self):
         self.assertTrue(module.allowed('DELETE', '/api/v1/media/sessions/' + 'a' * 32))
         self.assertFalse(module.allowed('DELETE', '/api/v1/media/sessions/../auth'))
