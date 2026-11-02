@@ -12,7 +12,7 @@ test('attendance graph shows backend counts and waits for activation ACK', async
   await page.route('**/api/v1/cameras/camera/live-stream?*',route=>route.fulfill({json:{details:{
     whepUrl:'/api/v1/media/ai/whep',mediaToken:'test-only',streamType:'AI',aiEnabled:true}}}));
   await page.route('**/api/v1/media/ai/whep',route=>route.fulfill({status:503,body:'No video in UI contract test'}));
-  await page.route('**/api/v1/rules/attendance',route=>{
+  await page.route('**/studio-api/v1/rules/attendance',route=>{
     if(route.request().method()==='PUT') {
       expect(route.request().postDataJSON()).toMatchObject({kind:'attendance',direction:1});
       ++version;

@@ -19,7 +19,7 @@ export function setRuntimeAccess(access:string|null, previous?:string) {
 async function request(method='GET',body?:unknown):Promise<RuntimeStatus> {
   const access=useRuntime.getState().access;
   if (!access) throw new Error('Connect board AI before publishing.');
-  const response=await fetch('/api/v1/rules/attendance',{
+  const response=await fetch('/studio-api/v1/rules/attendance',{
     method,headers:{Authorization:`Bearer ${access}`,'Content-Type':'application/json'},
     ...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(8000),
   });

@@ -1,6 +1,8 @@
 [Unit]
 Description=VQEC standalone Rule Studio
 After=network-online.target
+After=vqec-rule-studio-backend.service
+Wants=vqec-rule-studio-backend.service
 Wants=network-online.target
 
 [Service]

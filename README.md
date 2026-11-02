@@ -1,5 +1,11 @@
 # VQEC Rule Studio
 
+02/11: backend C17 riêng đã được triển khai trong source, sở hữu config bền và
+engine attendance khối3. UI Publish tới `/studio-api/v1/rules/attendance`; camera
+nhận kết quả qua IPC để quyết định action khối4. Build/contract/giới hạn tại
+[backend/README.md](backend/README.md). Các đoạn gateway-only/volatile bên dưới
+mô tả phiên bản trước khi tách backend.
+
 Ứng dụng web độc lập để vẽ Gate/Zone và soạn cấu hình rule bằng graph. React + TypeScript + Vite, Tailwind v4, component shadcn/ui theo cách cài thủ công (Button/Dialog + Radix), React Flow, Zustand, Dexie/IndexedDB, Lucide. Không có backend, đăng nhập, inference, evaluator hoặc phát sự kiện.
 
 ## Chạy

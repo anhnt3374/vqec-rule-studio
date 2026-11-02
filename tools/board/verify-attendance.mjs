@@ -56,7 +56,7 @@ try {
   const runtime = page.waitForResponse(
     (r) =>
       r.request().method() === "GET" &&
-      new URL(r.url()).pathname === "/api/v1/rules/attendance",
+      new URL(r.url()).pathname === "/studio-api/v1/rules/attendance",
   );
   await page
     .getByRole("button", { name: "Connect board AI", exact: true })
@@ -68,13 +68,12 @@ try {
   assert.equal(initialResponse.status(), 200);
   const initial = (await initialResponse.json()).details;
   assert.equal(initial.available, true);
-  assert.deepEqual(initial.line, {
-    x1: 0.1,
-    y1: 0.6,
-    x2: 0.9,
-    y2: 0.6,
-    direction: 1,
-  });
+  assert.equal(initial.owner, "rule-studio-backend");
+  assert.equal(initial.configured, true);
+  // Publish the same default geometry only; never overwrite an operator's custom gate.
+  for (const [key, value] of Object.entries({x1:.1,y1:.6,x2:.9,y2:.6,direction:1})) {
+    assert.ok(Math.abs(initial.line[key]-value)<1e-6, "Preserve custom gate; use read-only checks instead");
+  }
   await page.keyboard.press("Escape");
   await page.waitForFunction(
     () => {
@@ -117,7 +116,7 @@ try {
   const accepted = page.waitForResponse(
     (r) =>
       r.request().method() === "PUT" &&
-      new URL(r.url()).pathname === "/api/v1/rules/attendance",
+      new URL(r.url()).pathname === "/studio-api/v1/rules/attendance",
   );
   await page.getByRole("button", { name: "Publish", exact: true }).click();
   const reply = await accepted;
@@ -134,7 +133,7 @@ try {
       "Active v" + version,
     ),
   );
-  const finalReply = await page.request.get(base + "/api/v1/rules/attendance", {
+  const finalReply = await page.request.get(base + "/studio-api/v1/rules/attendance", {
     headers: { Authorization: "Bearer " + access },
   });
   assert.equal(finalReply.status(), 200);

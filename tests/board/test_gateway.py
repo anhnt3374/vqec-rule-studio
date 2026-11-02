@@ -1,6 +1,8 @@
 import importlib.util
 from pathlib import Path
 import unittest
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'tools/board'))
 
 spec = importlib.util.spec_from_file_location('studio_gateway', Path(__file__).resolve().parents[2] / 'tools/board/serve.py')
 module = importlib.util.module_from_spec(spec)
@@ -21,7 +23,8 @@ class GatewayRoutes(unittest.TestCase):
         self.assertFalse(module.allowed('DELETE', '/api/v1/cameras'))
 
     def test_attendance_read_publish_only(self):
-        path = '/api/v1/rules/attendance'
+        path = '/studio-api/v1/rules/attendance'
+        self.assertFalse(module.allowed('PUT', '/api/v1/rules/attendance'))
         for method in ('GET', 'PUT'):
             self.assertTrue(module.allowed(method, path))
             self.assertFalse(module.allowed(method, path + '?other=1'))

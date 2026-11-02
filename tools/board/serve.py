@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 import ssl
 from urllib.parse import urlsplit
+from rules import attendance
 
 
 def allowed(method, target):
@@ -17,7 +18,7 @@ def allowed(method, target):
     path = url.path
     if method == 'POST' and path in ('/api/v1/auth/login', '/api/v1/auth/logout', '/api/v1/auth/refresh'):
         return not url.query
-    if method in ('GET', 'PUT') and path == '/api/v1/rules/attendance':
+    if method in ('GET', 'PUT') and path == '/studio-api/v1/rules/attendance':
         return not url.query
     if method == 'GET' and path == '/api/v1/cameras':
         return not url.query
@@ -41,7 +42,7 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_header('Cache-Control', 'no-store')
             self.end_headers()
             self.wfile.write(data)
-        elif self.path.startswith('/api/'):
+        elif self.path.startswith(('/api/', '/studio-api/')):
             self.proxy()
         else:
             super().do_GET()
@@ -87,6 +88,15 @@ class Handler(SimpleHTTPRequestHandler):
         headers['Origin'] = 'https://' + self.server.upstream
         upstream = http.client.HTTPSConnection(self.server.upstream, context=self.server.upstream_tls, timeout=12)
         try:
+            if self.path == '/studio-api/v1/rules/attendance':
+                status, data = attendance(self, upstream, headers, body)
+                self.send_response(status)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(data)))
+                self.send_header('Cache-Control', 'no-store')
+                self.end_headers()
+                self.wfile.write(data)
+                return
             upstream.request(self.command, self.path, body=body, headers=headers)
             response = upstream.getresponse()
             data = response.read(1024 * 1024 + 1)
@@ -115,11 +125,13 @@ def main():
     parser.add_argument('--key', required=True)
     parser.add_argument('--upstream', default='192.168.138.142:8443')
     parser.add_argument('--port', type=int, default=8444)
+    parser.add_argument('--rules-socket', default='/run/vqec-rule-studio/control.sock')
     args = parser.parse_args()
     root = args.root.resolve(strict=True)
     handler = lambda *a, **kw: Handler(*a, directory=str(root), **kw)
     server = ThreadingHTTPServer(('0.0.0.0', args.port), handler)
     server.upstream = args.upstream
+    server.rules_socket = args.rules_socket
     server.upstream_tls = ssl.create_default_context(cafile=args.cert)
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.minimum_version = ssl.TLSVersion.TLSv1_2

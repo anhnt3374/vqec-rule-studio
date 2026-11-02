@@ -9,6 +9,56 @@ import sys
 import tarfile
 
 
+def activate(root, release):
+    units = {
+        'vqec-rule-studio.service': 'VQEC standalone Rule Studio',
+        'vqec-rule-studio-backend.service': 'VQEC Rule Studio native analysis',
+    }
+    saved = {}
+    for name, owner in units.items():
+        path = Path('/etc/systemd/system')/name
+        if path.exists() and (path.is_symlink() or owner not in path.read_text()):
+            raise RuntimeError('Unit is owned by another application')
+        saved[name] = path.read_bytes() if path.exists() else None
+    old = (root/'current').resolve(strict=True) if (root/'current').is_symlink() else None
+    snapshot = root/'rollbacks'/release.name
+    snapshot.mkdir(parents=True, mode=0o700)
+    (snapshot/'previous.json').write_text(json.dumps({'release': str(old) if old else None}))
+    for name, data in saved.items():
+        if data is not None:
+            (snapshot/name).write_bytes(data)
+    (release/'bin/vqec-rule-studio-backend').chmod(0o755)
+    try:
+        pending = root/'pending'
+        pending.symlink_to(release)
+        pending.replace(root/'current')
+        for name in units:
+            (Path('/etc/systemd/system')/name).write_bytes((release/'tools'/name).read_bytes())
+        subprocess.run(['systemctl', 'daemon-reload'], check=True)
+        subprocess.run(['systemctl', 'enable', *units], check=True)
+        for name in reversed(units):
+            subprocess.run(['systemctl', 'restart', name], check=True)
+            subprocess.run(['systemctl', 'is-active', '--quiet', name], check=True)
+    except BaseException:
+        subprocess.run(['systemctl', 'stop', *units], check=False)
+        if old:
+            restore = root/'restore'
+            restore.symlink_to(old)
+            restore.replace(root/'current')
+        for name, data in saved.items():
+            path = Path('/etc/systemd/system')/name
+            if data is None:
+                subprocess.run(['systemctl', 'disable', name], check=False)
+                path.unlink(missing_ok=True)
+            else:
+                path.write_bytes(data)
+        subprocess.run(['systemctl', 'daemon-reload'], check=True)
+        for name, data in reversed(list(saved.items())):
+            if data is not None:
+                subprocess.run(['systemctl', 'start', name], check=True)
+        raise
+
+
 def main():
     archive = Path(sys.argv[1])
     root = Path('/opt/vqec-rule-studio')
@@ -34,16 +84,7 @@ def main():
         path = release / name
         if path.is_symlink() or hashlib.sha256(path.read_bytes()).hexdigest() != digest:
             raise RuntimeError('Release hash mismatch')
-    pending = root / 'pending'
-    pending.symlink_to(release)
-    pending.replace(root / 'current')
-    unit = Path('/etc/systemd/system/vqec-rule-studio.service')
-    if unit.exists() and 'VQEC standalone Rule Studio' not in unit.read_text():
-        raise RuntimeError('Unit is owned by another application')
-    unit.write_bytes((release / 'tools/vqec-rule-studio.service').read_bytes())
-    subprocess.run(['systemctl', 'daemon-reload'], check=True)
-    subprocess.run(['systemctl', 'enable', 'vqec-rule-studio.service'], check=True)
-    subprocess.run(['systemctl', 'restart', 'vqec-rule-studio.service'], check=True)
+    activate(root, release)
     print('Rule Studio installed at https://192.168.138.142:8444/ (' + version + ')')
 
 
