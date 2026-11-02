@@ -8,6 +8,7 @@
 @import "./styles/camera/tools.css";
 @import "./styles/scene-objects.css";
 @import "./styles/feedback.css";
+@import "./styles/theme/camera.css";
 
 .runtime-panel{padding:10px 14px;border-bottom:1px solid #cbdde8;background:#f2f8fc;font-size:11px}
 .runtime-summary,.runtime-metrics{display:flex;align-items:center;gap:12px;flex-wrap:wrap}

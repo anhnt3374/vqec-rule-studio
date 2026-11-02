@@ -21,7 +21,7 @@ const variants = cva(
 );
 export function Button({
   className,
-  variant,
+  variant = "default",
   size,
   asChild = false,
   ...props
@@ -29,6 +29,6 @@ export function Button({
   VariantProps<typeof variants> & { asChild?: boolean }) {
   const Comp = asChild ? Slot : "button";
   return (
-    <Comp className={cn(variants({ variant, size, className }))} {...props} />
+    <Comp className={cn("studio-button", variants({ variant, size, className }))} data-variant={variant} {...props} />
   );
 }

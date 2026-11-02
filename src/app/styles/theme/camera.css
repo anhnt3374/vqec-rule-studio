@@ -1,0 +1,119 @@
+/* Camera FE tokens: pinned webui src/css/tailwind.css and DashboardLayout.vue. */
+@font-face {
+  font-family: Inter;
+  src: url('/fonts/inter/InterVariable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+:root {
+  --camera-primary: #0067b3;
+  --camera-title: #182443;
+  --camera-subtext: #878ea0;
+  --camera-surface: #ffffff8c;
+  --camera-border: #ffffffa6;
+  --camera-gradient: linear-gradient(92.43deg, #00b2ff 3.71%, #0067b3 98.05%);
+  --camera-shadow: inset 0 1px 0 1px #ffffff73, 0 8px 32px #3c6cf81a;
+  --line: #ffffffa6;
+  --muted: var(--camera-subtext);
+  --sky: var(--camera-primary);
+  font-family: Inter, 'Segoe UI', system-ui, sans-serif;
+  color: var(--camera-title);
+  background: #eaf1ff;
+}
+.workspace {
+  background:
+    radial-gradient(90rem 60rem at 15% 18%, #3c6cf838, transparent 55%),
+    radial-gradient(95rem 62rem at 85% 12%, #3c78ff29, transparent 50%),
+    radial-gradient(90rem 58rem at 78% 85%, #3c6cf829, transparent 50%),
+    radial-gradient(100rem 64rem at 8% 92%, #5082ff26, transparent 52%),
+    linear-gradient(122.4deg, #eaf1ff, #e5eeff);
+}
+.column {
+  border-radius: 24px;
+  border-color: var(--camera-border);
+  background: #ffffff6b;
+  box-shadow: var(--camera-shadow);
+  backdrop-filter: blur(24px);
+}
+.panel-header {
+  height: 68px;
+  min-height: 68px;
+  background: #ffffff57;
+  border-color: var(--camera-border);
+}
+.panel-header h1, .panel-header h2 { font-size: 15px; font-weight: 600; }
+.eyebrow { letter-spacing: .6px; font-size: 10px; }
+.nav-body { padding-top: 18px; }
+.section-label, .operator-group h3 { font-size: 11px; letter-spacing: .6px; }
+.search, .rule-card, .operator-item { border-radius: 14px; }
+.search, .rule-card {
+  border-color: var(--camera-border);
+  background: var(--camera-surface);
+  box-shadow: inset 0 1px 0 #ffffff59, 0 2px 8px #3c6cf80f;
+}
+.rule-card:hover { border-color: #00b2ff66; }
+.rule-copy strong, .operator-title { font-size: 13px; }
+.operator-title small { font-size: 10px; line-height: 1.5; }
+.nav-footer, .graph-toolbar, .graph-footer, .scene-footer, .runtime-panel {
+  background: #ffffff57;
+  border-color: var(--camera-border);
+}
+.runtime-panel { font-size: 12px; }
+.runtime-summary strong { letter-spacing: .6px; }
+.graph-canvas .react-flow { background: #ffffff40; }
+.react-flow.light {
+  --xy-background-color: #ffffff40;
+  --xy-background-color-default: #ffffff40;
+}
+.studio-button {
+  border-radius: 14px;
+  min-height: 32px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.studio-button[data-variant='default'] {
+  background: var(--camera-gradient);
+  box-shadow: inset 0 2px 0 1px #d0e8f84d, 0 4px 14px #0067b359;
+  border: 1px solid #ffffff59;
+}
+.studio-button[data-variant='default']:hover { filter: brightness(1.05); }
+.studio-button[data-variant='outline'] {
+  background: #ffffff8c;
+  border-color: #878ea033;
+  box-shadow: inset 0 1px 0 #ffffff59, 0 2px 8px #3c6cf80f;
+}
+.studio-button[data-variant='ghost']:hover { background: #cee9ff80; }
+.studio-button:disabled { filter: none; box-shadow: none; }
+.config-panel, .dialog-content {
+  background: #f1f6fff5;
+  border-color: #ffffffbf;
+  border-radius: 20px;
+  box-shadow: var(--camera-shadow);
+  backdrop-filter: blur(24px);
+}
+.config-panel > header { background: #ffffff57; border-color: var(--camera-border); }
+.field { font-size: 11px; font-weight: 500; color: #242f4cd9; }
+.field input:not([type='checkbox']):not([type='color']), .field select, .field textarea {
+  min-height: 36px;
+  border-radius: 12px;
+  background: #ffffffa6;
+  border-color: #ffffffbf;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--camera-title);
+  box-shadow: inset 0 1px 0 #ffffff59;
+}
+.field input[type='checkbox'] { accent-color: var(--camera-primary); width: 16px; height: 16px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible {
+  outline: 2px solid #0067b3;
+  outline-offset: 2px;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: #cee9ff80; border: 1px solid #00b2ff33; border-radius: 16px; }
+/* The outer camera shell supplies the background and page gutter when embedded. */
+html[data-embedded='true'], html[data-embedded='true'] body { background: transparent; }
+html[data-embedded='true'] .workspace { background: transparent; padding: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .studio-button { transition: none; }
+}

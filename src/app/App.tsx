@@ -9,6 +9,7 @@ export function App() {
     notice = useStudio((s) => s.notice),
     dirty = useStudio((s) => s.dirty || s.sceneDirty);
   useEffect(() => {
+    document.documentElement.dataset.embedded = new URLSearchParams(window.location.search).get("embed") === "1" ? "true" : "false";
     void useStudio.getState().init().then(()=>{
       const state=useStudio.getState();
       const rule=state.rules.find(r=>r.type==="System");

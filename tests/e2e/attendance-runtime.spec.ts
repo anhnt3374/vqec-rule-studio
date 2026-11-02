@@ -50,6 +50,7 @@ test('Highlight is selectable from the operator library and its config survives 
   await page.getByLabel('Highlight color',{exact:true}).fill('#00aa99');
   await page.getByRole('checkbox',{name:'Enable Highlight',exact:true}).uncheck();
   await page.getByRole('button',{name:'Save',exact:true}).click();
+  await expect(page.getByRole('status').filter({hasText:'Draft and scene saved'})).toBeVisible();
   await page.reload();
   await page.getByRole('button',{name:'Back to rules'}).click();
   await page.getByRole('button',{name:/Restricted Area Alert/}).first().click();
