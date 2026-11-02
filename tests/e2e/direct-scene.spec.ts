@@ -13,6 +13,7 @@ test("visible Gate tools work before selecting a rule; save scene, edit and reus
   page,
 }) => {
   await page.goto("/");
+  await page.getByRole("button", { name: "Back to rules" }).click();
   await expect(
     page.getByRole("button", { name: "Draw Gate", exact: true }),
   ).toHaveText("Draw Gate");
@@ -34,6 +35,7 @@ test("visible Gate tools work before selecting a rule; save scene, edit and reus
   await page.getByRole("button", { name: "Save scene", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Scene saved");
   await page.reload();
+  await page.getByRole("button", { name: "Back to rules" }).click();
   await expect(
     page.locator(".spatial-label").filter({ hasText: "Front door" }),
   ).toBeVisible();
@@ -71,6 +73,7 @@ test("draw a freehand zone in view mode, then cancel only scene changes", async 
   page,
 }) => {
   await page.goto("/");
+  await page.getByRole("button", { name: "Back to rules" }).click();
   await page
     .getByRole("button", { name: /Restricted Area Alert/ })
     .first()
@@ -115,6 +118,7 @@ test("light theme and vertical top/bottom connections on the saved rule", async 
   page,
 }) => {
   await page.goto("/");
+  await page.getByRole("button", { name: "Back to rules" }).click();
   await page
     .getByRole("button", { name: /Restricted Area Alert/ })
     .first()
@@ -148,6 +152,7 @@ test("explicit Finish zone stays visible and incomplete outlines cannot be saved
   page,
 }) => {
   await page.goto("/");
+  await page.getByRole("button", { name: "Back to rules" }).click();
   await page.getByRole("button", { name: "Draw Zone", exact: true }).click();
   const r = (await page.getByLabel("Scene drawing canvas").boundingBox())!;
   await page.mouse.click(r.x + r.width * 0.15, r.y + r.height * 0.25);
@@ -169,6 +174,7 @@ test("explicit Finish zone stays visible and incomplete outlines cannot be saved
   await page.getByRole("button", { name: "Save scene", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Scene saved");
   await page.reload();
+  await page.getByRole("button", { name: "Back to rules" }).click();
   await expect(
     page.locator(".spatial-label").filter({ hasText: "Zone 2" }),
   ).toBeVisible();

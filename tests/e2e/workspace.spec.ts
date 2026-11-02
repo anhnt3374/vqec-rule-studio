@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 async function openCustom(page: Page) {
   await page.goto("/");
+  await page.getByRole("button", { name: "Back to rules" }).click();
   await page
     .getByRole("button", { name: /Restricted Area Alert/ })
     .first()
@@ -29,6 +30,7 @@ test("draw gate first, reverse, drag into graph and restore draft", async ({
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
+  await page.getByRole("button", { name: "Back to rules" }).click();
   await page.getByRole("button", { name: "Rule", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Rule name" })
@@ -79,6 +81,7 @@ test("draw gate first, reverse, drag into graph and restore draft", async ({
   await page.getByRole("button", { name: "Save Draft", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Draft and scene saved");
   await page.reload();
+  await page.getByRole("button", { name: "Back to rules" }).click();
   await page
     .getByRole("button", { name: /Entrance authoring/ })
     .first()
@@ -121,6 +124,7 @@ test("zone vertices and resizable columns preserve normalized scene", async ({
   await page.getByRole("button", { name: "Save Draft", exact: true }).click();
   await expect(page.getByRole("status")).toBeVisible();
   await page.reload();
+  await page.getByRole("button", { name: "Back to rules" }).click();
   await page
     .getByRole("button", { name: /Restricted Area Alert/ })
     .first()
@@ -129,43 +133,29 @@ test("zone vertices and resizable columns preserve normalized scene", async ({
     page.locator(".spatial-label").filter({ hasText: "Zone 2" }),
   ).toBeVisible();
 });
-test("published snapshot stays unchanged until republishing; cancel restores edits", async ({
-  page,
-}) => {
+test("unsupported custom publish preserves snapshot; draft and cancel retain edits", async ({ page }) => {
   await openCustom(page);
-  await page.getByRole("button", { name: "Publish", exact: true }).click();
-  await expect(
-    page.getByRole("button", { name: "Edit rule", exact: true }),
-  ).toBeVisible();
   const original = await snapshot(page);
-  await page.getByRole("button", { name: "Edit rule", exact: true }).click();
-  await page
-    .getByRole("button", { name: "Configure Zone Presence", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Publish", exact: true }).click();
+  await expect(page.getByRole("alert")).toContainText("Attendance");
+  expect(await snapshot(page)).toBe(original);
+  await page.getByRole("button", { name: "Dismiss notification" }).click();
+  await page.getByRole("button", { name: "Configure Zone Presence", exact: true }).click();
   await page.getByRole("textbox", { name: "Display name" }).fill("Edited zone");
   await page.getByRole("button", { name: "Save Draft", exact: true }).click();
   await expect(page.getByRole("status")).toBeVisible();
   expect(await snapshot(page)).toBe(original);
   await page.getByRole("textbox", { name: "Display name" }).fill("Discard me");
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
-  await page
-    .getByRole("button", { name: "Discard changes", exact: true })
-    .click();
-  await expect(page.locator(".operator-node").first()).toContainText(
-    "Edited zone",
-  );
+  await page.getByRole("button", { name: "Discard changes", exact: true }).click();
+  await expect(page.locator(".operator-node").first()).toContainText("Edited zone");
   expect(await snapshot(page)).toBe(original);
-  await page.getByRole("button", { name: "Edit rule", exact: true }).click();
-  await page.getByRole("button", { name: "Publish", exact: true }).click();
-  await expect(
-    page.getByRole("button", { name: "Edit rule", exact: true }),
-  ).toBeVisible();
-  expect(await snapshot(page)).not.toBe(original);
 });
 test("Attendance locked and shared object deletion blocked", async ({
   page,
 }) => {
   await page.goto("/");
+  await page.getByRole("button", { name: "Back to rules" }).click();
   await page.getByRole("button", { name: /Attendance/ }).click();
   await page.getByRole("button", { name: "Edit rule", exact: true }).click();
   await expect(
@@ -228,9 +218,29 @@ test("configure, duplicate, delete and undo graph operators", async ({
   await page.getByRole("button", { name: "Save Draft", exact: true }).click();
   await expect(page.getByRole("status")).toBeVisible();
   await page.reload();
+  await page.getByRole("button", { name: "Back to rules" }).click();
   await page
     .getByRole("button", { name: /Restricted Area Alert/ })
     .first()
     .click();
   await expect(page.locator(".react-flow__node")).toHaveCount(7);
+});
+
+test("columns follow rule library, graph, video order and resize by keyboard", async ({ page }) => {
+  await page.goto("/");
+  const columns = page.locator(".workspace > .column");
+  await expect(columns).toHaveCount(3);
+  await expect(columns.nth(0)).toHaveClass(/navigation/);
+  await expect(columns.nth(1)).toHaveClass(/graph-column/);
+  await expect(columns.nth(2)).toHaveClass(/scene-column/);
+  const boxes = await columns.evaluateAll(elements => elements.map(el => el.getBoundingClientRect().x));
+  expect(boxes[0]).toBeLessThan(boxes[1]);
+  expect(boxes[1]).toBeLessThan(boxes[2]);
+  const separator = page.getByRole("separator", { name: "Resize navigation and graph" });
+  const before = (await columns.nth(0).boundingBox())!.width;
+  await separator.focus();
+  await page.keyboard.press("ArrowRight");
+  expect((await columns.nth(0).boundingBox())!.width).toBeGreaterThan(before);
+  expect((await columns.nth(1).boundingBox())!.width).toBeGreaterThanOrEqual(360);
+  expect((await columns.nth(2).boundingBox())!.width).toBeGreaterThanOrEqual(400);
 });

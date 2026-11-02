@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 async function openCustom(page: Page) {
   await page.goto("/");
+  await page.getByRole("button", { name: "Back to rules" }).click();
   await page
     .getByRole("button", { name: /Restricted Area Alert/ })
     .first()
@@ -112,6 +113,7 @@ test("custom rule deletion keeps scene; uploaded background survives refresh", a
   await page.getByRole("button", { name: "Save Draft", exact: true }).click();
   await expect(page.getByRole("status")).toBeVisible();
   await page.reload();
+  await page.getByRole("button", { name: "Back to rules" }).click();
   await expect(page.getByAltText("Camera scene background")).toHaveAttribute(
     "src",
     /^data:image/,

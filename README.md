@@ -57,7 +57,7 @@ Tham chiếu: source Q5 `WorkflowView.vue`, `FlowCanvas.vue` (port-top/port-bott
 
 ## Bố cục và thao tác
 
-Chỉ ba cột: Rules/Operators, Graph, Camera. Không có menu hệ thống hoặc inspector thứ tư. Kéo hai vạch ngăn để resize; có thể dùng Tab rồi phím trái/phải. Giới hạn tối thiểu lần lượt 220/400/320 px; cửa sổ hẹp cuộn ngang. Khung camera chỉ có header tên, subheader filter và preview; công cụ, danh sách object mở nổi trong khung camera.
+Chỉ ba cột: Rules/Operators, Graph, Camera. Không có menu hệ thống hoặc inspector thứ tư. Kéo hai vạch ngăn để resize; có thể dùng Tab rồi phím trái/phải. Từ trái sang phải: Rules/Operators → Graph → Camera, tỷ lệ mặc định 20/45/35. Giới hạn tối thiểu lần lượt 200/360/400 px; cửa sổ hẹp cuộn ngang. Khung camera chỉ có header tên, subheader filter và preview; công cụ, danh sách object mở nổi trong khung camera.
 
 1. Có thể vẽ scene trước theo hướng dẫn trên. `+ Rule` → đặt tên → workspace ở Edit. Rule đã có mở ở View, bấm `Edit rule`.
 2. Chọn **Draw Gate**, nhấn và kéo trên ảnh. Gate chưa tạo operator. Chọn **Draw Zone**, click các đỉnh rồi Enter, double-click, click gần đỉnh đầu hoặc `Finish zone` để đóng polygon.
