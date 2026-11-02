@@ -15,7 +15,7 @@ Mở `http://localhost:5175`. Vite lắng nghe trên mạng LAN để xem từ m
 
 ## Chạy trên board QRB142
 
-Studio: **https://192.168.138.142:8444/**. Camera/API hiện hữu: **https://192.168.138.142:8443/**. Chấp nhận chứng chỉ development của thiết bị khi browser hỏi.
+Studio: **https://192.168.138.142:8444/**. Camera/API hiện hữu: **https://192.168.138.142/**. Chấp nhận chứng chỉ development của thiết bị khi browser hỏi.
 
 Mở `Camera source` → nhập tài khoản camera hiện có → `Connect board AI`. Studio gọi API danh sách camera và metadata `streamType=AI` để nhận media grant, rồi phát video WebRTC. Không nhúng tài khoản/token trong asset hoặc lưu vào IndexedDB. Access token được làm mới trong bộ nhớ khi xem; đóng/ngắt kết nối/refresh sẽ đóng phiên Studio; refresh khôi phục rule đã lưu, và kết nối camera cần thực hiện lại.
 
@@ -160,3 +160,14 @@ Checks: `npm test`, `npm run build`, and
 `npx playwright test -c config/playwright.config.ts tests/e2e/attendance-runtime.spec.ts`.
 Set `PLAYWRIGHT_EXECUTABLE_PATH` to an existing Chromium when needed. The browser
 contract test mocks API replies; it does not certify QDC video or inference.
+
+02/11 — Deploy gateway standalone: upstream HTTPS443, cho phép GET/PUT đúng
+`/api/v1/rules/attendance`. Kiểm live sau khi AI gallery khởi tạo xong bằng
+`node tools/board/verify-attendance.mjs`: ba cột đúng thứ tự, AI1440p100frame,
+Publish gate mặc định cùng geometry → active version ACK; logout session test.
+Credential đọc từ file private ngoài repo, không đổi account/DB để chạy test.
+
+Deploy02/11: `studio.748ab40fb621` active trên8444, backend
+`ai-dev.c969f17ee526` trên443. Browser thật Publish mặc định→activev4 qua.
+Video headless Studio vẫn drop cao (100frame/38drop, tiếp151frame/61drop);
+web camera FE cùng backend kiểm100frame/2drop. Chưa nghiệm thu Studio smooth.
