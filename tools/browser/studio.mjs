@@ -7,10 +7,10 @@ export async function cameraWorkspace(camera, credentials, base) {
   const session=(await login.json()).details;
   try {
     await camera.context().addInitScript(({origin,session})=>{
-      if(location.origin===origin){localStorage.setItem('token',session.accessToken);sessionStorage.setItem('refreshToken',session.refreshToken??'');}
+      if(location.origin===origin){if(!localStorage.getItem('token'))localStorage.setItem('token',session.accessToken);if(!sessionStorage.getItem('refreshToken'))sessionStorage.setItem('refreshToken',session.refreshToken??'');}
     },{origin:origin.origin,session});
-    const metadata=camera.waitForResponse(r=>r.request().method()==='GET'&&r.url().includes('live-stream?streamType=AI'));
-    const offer=camera.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname==='/api/v1/media/ai/whep');
+    const metadata=camera.waitForResponse(r=>r.request().method()==='GET'&&r.url().includes('live-stream?streamType=AI')).catch(()=>null);
+    const offer=camera.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname==='/api/v1/media/ai/whep').catch(()=>null);
     await camera.goto(origin.origin+'/admin/rule-studio');
     const workspace=camera.frameLocator('iframe[title="Rule Studio"]');
     await workspace.locator('.workspace').waitFor();
@@ -22,7 +22,10 @@ export async function cameraWorkspace(camera, credentials, base) {
       if(['waitForFunction','evaluate'].includes(key))return async(...args)=>(await frame())[key](...args);
       return workspace[key].bind(workspace);
     }});
-    return {page,access:session.accessToken,metadata:await metadata,offer:await offer};
+    const discovered=await metadata, negotiated=await offer;
+    assert.equal(discovered?.status(),200,'Automatic AI metadata unavailable');
+    assert.equal(negotiated?.status(),201,'Automatic AI WHEP failed');
+    return {page,access:session.accessToken,metadata:discovered,offer:negotiated};
   } catch(error) {
     await camera.request.post(origin.origin+'/api/v1/auth/logout',{headers:{Authorization:'Bearer '+session.accessToken},data:{}}).catch(()=>{});
     throw error;

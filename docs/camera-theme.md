@@ -25,3 +25,10 @@ Deployment uses the application's UI-only installer, preserving media/engine PID
 Auto-connect checks:43unit, build/lint; iframe ready/rotation, rejected non-parent
 message, source cleanup, no child login/logout, and runtime Publish browser checks.
 Board video acceptance for this change is recorded in the application docs.
+
+02/11 deployed auto-connect on QRB142: `tools/browser/verify-auto.mjs` passed
+1440p video, zero child auth requests, parent refresh without a new WHEP peer,
+valid parent session after iframe close, four peers/resources past15s, fifth
+viewer429 and slot reuse. `tools/board/verify-highlight.mjs` passed draft reload
+and video; runtime remained version4 with configured red Highlight, no Publish.
+Playback counters do not establish smoothness/FPS or AI accuracy.
