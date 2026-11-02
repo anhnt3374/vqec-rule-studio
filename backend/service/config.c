@@ -23,8 +23,8 @@ int vqec_vision_studio_service_config_apply(vqec_vision_studio_service *_self,co
         else values[i]=json_object_get_double(value);
         if (!isfinite(values[i])) valid=0;
     }
-    uint32_t color=0;
-    if (valid && vqec_vision_studio_highlight_config_read(body,&color)) valid=0;
+    uint32_t color=0,highlight=0;
+    if (valid && vqec_vision_studio_highlight_config_read(body,&color,&highlight)) valid=0;
     json_object_put(body);
     vqec_vision_rule_config config={1,(float)values[0],(float)values[1],(float)values[2],(float)values[3],.002f,
         values[4]==1 ? 1 : values[4]==-1 ? -1 : 0};
@@ -41,14 +41,16 @@ int vqec_vision_studio_service_config_apply(vqec_vision_studio_service *_self,co
     if (version>=INT64_MAX) return 409;
     config.version=version+1;
     sqlite3_stmt *row=NULL;
-    if (sqlite3_prepare_v2(_self->database,"INSERT OR REPLACE INTO attendance VALUES(1,?1,?2,?3,?4,?5,?6,?7)",-1,&row,NULL)!=SQLITE_OK) return 500;
+    if (sqlite3_prepare_v2(_self->database,"INSERT OR REPLACE INTO attendance(id,version,x1,y1,x2,y2,direction,highlight_color,highlight_enabled) VALUES(1,?1,?2,?3,?4,?5,?6,?7,?8)",-1,&row,NULL)!=SQLITE_OK) return 500;
     int failed=sqlite3_bind_int64(row,1,(sqlite3_int64)config.version)!=SQLITE_OK ||
         sqlite3_bind_double(row,2,config.x1)!=SQLITE_OK || sqlite3_bind_double(row,3,config.y1)!=SQLITE_OK ||
         sqlite3_bind_double(row,4,config.x2)!=SQLITE_OK || sqlite3_bind_double(row,5,config.y2)!=SQLITE_OK ||
-        sqlite3_bind_int(row,6,config.direction)!=SQLITE_OK || sqlite3_bind_int64(row,7,color)!=SQLITE_OK;
+        sqlite3_bind_int(row,6,config.direction)!=SQLITE_OK || sqlite3_bind_int64(row,7,color)!=SQLITE_OK ||
+        sqlite3_bind_int(row,8,(int)highlight)!=SQLITE_OK;
     int rc=failed ? SQLITE_ERROR : sqlite3_step(row); sqlite3_finalize(row);
     if (rc!=SQLITE_DONE) return 503;
     /* Durable intent precedes boundary activation; fsync never holds the engine lock. */
-    pthread_mutex_lock(&_self->lock); _self->pending=config; _self->pending_color=color; pthread_mutex_unlock(&_self->lock);
+    pthread_mutex_lock(&_self->lock); _self->pending=config; _self->pending_color=color;
+    _self->pending_highlight=highlight; pthread_mutex_unlock(&_self->lock);
     return 202;
 }

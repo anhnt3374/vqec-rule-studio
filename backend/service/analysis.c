@@ -32,6 +32,7 @@ int vqec_vision_studio_service_analysis_process(vqec_vision_studio_service *_sel
         if (vqec_vision_rules_engine_context_start(_self->engine,&_self->pending)) { pthread_mutex_unlock(&_self->lock); return -1; }
         _self->active=_self->pending; _self->pending.version=0;
         _self->active_color=_self->pending_color; _self->highlight.count=0;
+        _self->active_highlight=_self->pending_highlight;
     }
     int status=_self->active.version ? vqec_vision_rules_engine_process(_self->engine,&batch,&result) : VQEC_VISION_UNSUPPORTED;
     uint64_t done=vqec_vision_studio_service_state_clock();

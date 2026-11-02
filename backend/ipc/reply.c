@@ -4,7 +4,8 @@ int vqec_vision_studio_ipc_reply_write(vqec_vision_studio_service *_self,const v
 {
     vqec_vision_studio_highlight_action draws[32];
     if (_status) _self->highlight.count=0;
-    unsigned count=_status ? 0 : vqec_vision_studio_highlight_state_process(&_self->highlight,_batch,_result,_self->active_color,draws);
+    unsigned count=_status ? 0 : vqec_vision_studio_highlight_state_process(&_self->highlight,_batch,_result,
+        _self->active_highlight ? _self->active_color:0,draws);
     uint64_t words[]={VQEC_VISION_RULE_IPC_MAGIC,_sequence,(uint64_t)(_status!=0),_self->epoch,_self->active.version,
         _batch->epoch,_batch->frame,_batch->revision,_batch->pts,_result->selected,_result->lost,_result->count,
         (uint64_t)(int64_t)_self->active.direction};

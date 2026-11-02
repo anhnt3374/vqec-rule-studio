@@ -162,6 +162,8 @@ class Runtime(unittest.TestCase):
             self.assertEqual(result[11],1)
             self.assertEqual(result[19],0)
         self.assertFalse(self.control()['details']['highlight']['enabled'])
+        self.stop(); self.start()
+        self.assertEqual(self.control()['details']['highlight'],{'enabled':False,'color':'#00ff99','lifetime':'track'})
         for h in [{'enabled':'yes'},{'enabled':True,'color':'red'},
                   {'enabled':True,'color':'#123abc','lifetime':'three-seconds'}]:
             config['highlight']=h

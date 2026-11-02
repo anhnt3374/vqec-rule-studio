@@ -5,7 +5,8 @@ attendance chain, configured opaque RGB and track lifetime. No Highlight means
 no bbox/card request; Attendance still triggers independently. Native state keeps
 the color beyond3s while the same observed/certain subject remains continuous.
 Missing subject, gap/unavailable, generation/source/AI/gallery change or Publish
-clears that state. SQLite adds highlight_color, default0 for existing rows;
+clears that state. SQLite stores highlight_color and highlight_enabled independently, so disabling
+keeps the configured color across restart. Legacy rows default to disabled;
 migration preserves the existing gate and does not activate an implicit red node.
 The installer backs up the configuration DB before migration for paired rollback.
 

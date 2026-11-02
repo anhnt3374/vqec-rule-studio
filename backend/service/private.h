@@ -11,6 +11,7 @@ typedef struct vqec_vision_studio_service {
     vqec_vision_rule_engine *engine; /* analysis worker owns process; lock at boundary */
     vqec_vision_rule_config active,pending;
     uint32_t active_color,pending_color;
+    uint32_t active_highlight,pending_highlight;
     vqec_vision_studio_highlight_state highlight;
     sqlite3 *database; /* control worker only, full synchronous commits */
     uint64_t epoch,last_ns,sequence,offered,processed,invalid,gaps,crossings,selected;

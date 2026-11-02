@@ -49,7 +49,7 @@ int vqec_vision_studio_service_status_write(vqec_vision_studio_service *_self,in
     json_object_object_add(d,"events",events);
     struct json_object *highlight=json_object_new_object();
     char hex[8]; snprintf(hex,sizeof(hex),"#%06x",_self->active_color&0xffffff);
-    json_object_object_add(highlight,"enabled",json_object_new_boolean(_self->active_color!=0));
+    json_object_object_add(highlight,"enabled",json_object_new_boolean(_self->active_highlight));
     json_object_object_add(highlight,"color",json_object_new_string(hex));
     json_object_object_add(highlight,"lifetime",json_object_new_string("track"));
     json_object_object_add(d,"highlight",highlight);

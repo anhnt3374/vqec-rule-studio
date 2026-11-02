@@ -17,22 +17,17 @@ int vqec_vision_studio_service_state_open(vqec_vision_studio_service *_self,cons
         "CREATE TABLE IF NOT EXISTS attendance(id INTEGER PRIMARY KEY CHECK(id=1),"
         "version INTEGER NOT NULL,x1 REAL NOT NULL,y1 REAL NOT NULL,x2 REAL NOT NULL,y2 REAL NOT NULL,direction INTEGER NOT NULL);",
         NULL,NULL,NULL)!=SQLITE_OK) return -1;
-    sqlite3_stmt *columns=NULL; int has_color=0;
-    if (sqlite3_prepare_v2(_self->database,"PRAGMA table_info(attendance)",-1,&columns,NULL)!=SQLITE_OK) return -1;
-    int schema_rc;
-    while ((schema_rc=sqlite3_step(columns))==SQLITE_ROW)
-        has_color|=!strcmp((const char*)sqlite3_column_text(columns,1),"highlight_color");
-    sqlite3_finalize(columns);
-    if (schema_rc!=SQLITE_DONE || (!has_color && sqlite3_exec(_self->database,
-        "ALTER TABLE attendance ADD COLUMN highlight_color INTEGER NOT NULL DEFAULT 0",NULL,NULL,NULL)!=SQLITE_OK)) return -1;
+    if (vqec_vision_studio_highlight_config_schema(_self->database)) return -1;
     sqlite3_stmt *row=NULL;
-    if (sqlite3_prepare_v2(_self->database,"SELECT version,x1,y1,x2,y2,direction,highlight_color FROM attendance WHERE id=1",-1,&row,NULL)!=SQLITE_OK) return -1;
+    if (sqlite3_prepare_v2(_self->database,"SELECT version,x1,y1,x2,y2,direction,highlight_color,highlight_enabled FROM attendance WHERE id=1",-1,&row,NULL)!=SQLITE_OK) return -1;
     int rc=sqlite3_step(row);
     if (rc==SQLITE_ROW) {
         if (sqlite3_column_int64(row,0)<=0) { sqlite3_finalize(row); return -1; }
         sqlite3_int64 color=sqlite3_column_int64(row,6);
         if (color && (color<UINT32_C(0xff000000) || color>UINT32_MAX)) { sqlite3_finalize(row); return -1; }
-        _self->active_color=(uint32_t)color;
+        int enabled=sqlite3_column_int(row,7);
+        if (enabled<0 || enabled>1 || (enabled && !color)) { sqlite3_finalize(row); return -1; }
+        _self->active_color=(uint32_t)color; _self->active_highlight=(uint32_t)enabled;
         _self->active=(vqec_vision_rule_config){.version=(uint64_t)sqlite3_column_int64(row,0),
             .x1=(float)sqlite3_column_double(row,1),.y1=(float)sqlite3_column_double(row,2),
             .x2=(float)sqlite3_column_double(row,3),.y2=(float)sqlite3_column_double(row,4),
