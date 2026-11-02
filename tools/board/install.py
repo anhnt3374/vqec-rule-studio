@@ -7,6 +7,27 @@ import re
 import subprocess
 import sys
 import tarfile
+import sqlite3
+import shutil
+g_database = Path('/var/lib/vqec-rule-studio/attendance.sqlite3')
+
+
+def backup_configuration(snapshot):
+    database = g_database
+    if database.exists():
+        with sqlite3.connect('file:'+str(database)+'?mode=ro', uri=True) as source:
+            with sqlite3.connect(str(snapshot/'attendance.sqlite3')) as target:
+                source.backup(target)
+        (snapshot/'attendance.sqlite3').chmod(0o600)
+
+
+def restore_configuration(snapshot):
+    backup = snapshot/'attendance.sqlite3'
+    if backup.exists():
+        database = g_database
+        for suffix in ('-wal', '-shm'):
+            Path(str(database)+suffix).unlink(missing_ok=True)
+        shutil.copy2(backup, database)  # Both owned services have stopped first.
 
 
 def activate(root, release):
@@ -23,6 +44,7 @@ def activate(root, release):
     old = (root/'current').resolve(strict=True) if (root/'current').is_symlink() else None
     snapshot = root/'rollbacks'/release.name
     snapshot.mkdir(parents=True, mode=0o700)
+    backup_configuration(snapshot)
     (snapshot/'previous.json').write_text(json.dumps({'release': str(old) if old else None}))
     for name, data in saved.items():
         if data is not None:
@@ -40,7 +62,8 @@ def activate(root, release):
             subprocess.run(['systemctl', 'restart', name], check=True)
             subprocess.run(['systemctl', 'is-active', '--quiet', name], check=True)
     except BaseException:
-        subprocess.run(['systemctl', 'stop', *units], check=False)
+        subprocess.run(['systemctl', 'stop', *units], check=True)
+        restore_configuration(snapshot)
         if old:
             restore = root/'restore'
             restore.symlink_to(old)

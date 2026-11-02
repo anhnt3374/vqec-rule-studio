@@ -8,6 +8,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(STUDIO REQUIRED IMPORTED_TARGET json-c sqlite3)
 add_executable(vqec-rule-studio-backend
     engine/context.c engine/geometry.c engine/process.c
+    highlight/config.c highlight/state.c ipc/reply.c
     service/main.c service/state.c service/socket.c service/config.c service/status.c
     service/analysis.c service/control.c)
 target_compile_options(vqec-rule-studio-backend PRIVATE -Wall -Wextra -Werror -Wpedantic)

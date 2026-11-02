@@ -31,6 +31,7 @@ int vqec_vision_studio_service_analysis_process(vqec_vision_studio_service *_sel
     if (_self->pending.version) {
         if (vqec_vision_rules_engine_context_start(_self->engine,&_self->pending)) { pthread_mutex_unlock(&_self->lock); return -1; }
         _self->active=_self->pending; _self->pending.version=0;
+        _self->active_color=_self->pending_color; _self->highlight.count=0;
     }
     int status=_self->active.version ? vqec_vision_rules_engine_process(_self->engine,&batch,&result) : VQEC_VISION_UNSUPPORTED;
     uint64_t done=vqec_vision_studio_service_state_clock();
@@ -39,18 +40,8 @@ int vqec_vision_studio_service_analysis_process(vqec_vision_studio_service *_sel
     _self->gaps+=batch.gap!=0; _self->selected=result.selected; _self->frame=batch.frame;
     _self->pts=batch.pts; _self->source_epoch=batch.epoch; _self->last_ns=!status && batch.available && !result.lost ? done : 0;
     _self->eval_us=(done-start)/1000; if (_self->eval_us>_self->eval_max_us) _self->eval_max_us=_self->eval_us;
-    uint64_t words[]={VQEC_VISION_RULE_IPC_MAGIC,sequence,(uint64_t)(status!=0),_self->epoch,_self->active.version,
-        batch.epoch,batch.frame,batch.revision,batch.pts,result.selected,result.lost,result.count,(uint64_t)(int64_t)_self->active.direction};
-    for (unsigned i=0;i<13;++i) vqec_vision_rules_ipc_wire_put(_out,i,words[i]);
-    vqec_vision_rules_ipc_wire_float(_out,13,_self->active.x1); vqec_vision_rules_ipc_wire_float(_out,14,_self->active.y1);
-    vqec_vision_rules_ipc_wire_float(_out,15,_self->active.x2); vqec_vision_rules_ipc_wire_float(_out,16,_self->active.y2);
-    vqec_vision_rules_ipc_wire_put(_out,17,_self->ai_epoch); vqec_vision_rules_ipc_wire_put(_out,18,_self->gallery_epoch);
-    for (unsigned i=0;i<result.count;++i) {
-        vqec_vision_rules_ipc_wire_put(_out,19+i*2,hits[i].id); vqec_vision_rules_ipc_wire_put(_out,20+i*2,hits[i].generation);
-        unsigned n=(unsigned)(_self->crossings++%12); _self->event_frames[n]=batch.frame;
-        _self->event_tracks[n]=hits[i].id; _self->event_versions[n]=_self->active.version;
-    }
-    pthread_mutex_unlock(&_self->lock); return 152+(int)result.count*16;
+    int size=vqec_vision_studio_ipc_reply_write(_self,&batch,&result,sequence,status,_out);
+    pthread_mutex_unlock(&_self->lock); return size;
 }
 void *vqec_vision_studio_service_analysis_run(void *_context)
 {

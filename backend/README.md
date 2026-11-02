@@ -1,5 +1,21 @@
 # Native Rule Studio backend
 
+02/11 Highlight update: explicit optional Highlight operator in the supported
+attendance chain, configured opaque RGB and track lifetime. No Highlight means
+no bbox/card request; Attendance still triggers independently. Native state keeps
+the color beyond3s while the same observed/certain subject remains continuous.
+Missing subject, gap/unavailable, generation/source/AI/gallery change or Publish
+clears that state. SQLite adds highlight_color, default0 for existing rows;
+migration preserves the existing gate and does not activate an implicit red node.
+The installer backs up the configuration DB before migration for paired rollback.
+
+IPC now v2: max reply1448bytes, header168 +16*occurrences +24*current drawing
+instructions; each drawing is track/generation/ARGB. Camera only applies these
+instructions; it no longer owns a three-second red-color policy. Deploy native
+owner and camera adapter together; v1/v2 mismatch fails unavailable. The v1
+measurements below are historical. The current Studio template adds Highlight as
+a draft, with color/enable controls, and requires Publish before activation.
+
 02/11: Studio owns durable attendance configuration and block3 analysis in a
 separate C17 daemon. Camera owns block1/2 and block4 event/OSD decisions. The
 former forwarding-only rule gateway is replaced; video/auth still use camera API.
