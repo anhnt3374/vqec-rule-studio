@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { compileAttendance } from './attendance';
+import { requestCameraSession } from '@/features/camera/bridge';
 import type { Rule, CameraScene } from '@/models/types';
 export interface RuntimeStatus {
   activeVersion:number; pendingVersion:number; engineEpoch:string; available:boolean;
@@ -24,6 +25,7 @@ async function request(method='GET',body?:unknown):Promise<RuntimeStatus> {
     method,headers:{Authorization:`Bearer ${access}`,'Content-Type':'application/json'},
     ...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(8000),
   });
+  if (response.status===401) requestCameraSession('refresh');
   if (!response.ok) throw new Error(`Rule runtime HTTP ${response.status}`);
   return (await response.json()).details as RuntimeStatus;
 }

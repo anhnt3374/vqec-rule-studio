@@ -3,7 +3,11 @@
 Rule Studio appears in the camera sidebar at `/admin/rule-studio`, with an iframe
 to the same device on port8444 and `?embed=1`. Standalone8444 remains available.
 The route/menu patch lives in the application repo, authorized by the user02/11.
-No auth token is passed through the iframe URL; Studio retains its existing login.
+No auth token is passed through the iframe URL. Studio automatically borrows the
+camera session over a window/origin-checked message bridge; the parent owns
+refresh/logout. The child keeps access in memory and has no credential form.
+Standalone8444 redirects into the authenticated camera menu. A transient video
+error has bounded retries; source cleanup releases only its media resource.
 
 First style pass: local Inter variable font, camera blue/cyan action gradient,
 24px translucent panels, shared background, rounded controls, focus outlines and
@@ -17,3 +21,7 @@ Inter: https://github.com/rsms/inter, SIL OFL1.1 in `public/fonts/inter/OFL.txt`
 Validation: production build/lint,42unit tests and graph/scene/Highlight browser
 checks. Save/reload verification waits for Save completion before navigating.
 Deployment uses the application's UI-only installer, preserving media/engine PIDs.
+
+Auto-connect checks:43unit, build/lint; iframe ready/rotation, rejected non-parent
+message, source cleanup, no child login/logout, and runtime Publish browser checks.
+Board video acceptance for this change is recorded in the application docs.

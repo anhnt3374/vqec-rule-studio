@@ -1,5 +1,6 @@
 // Read-only runtime verification: all graph edits use this fresh browser's draft.
 import assert from 'node:assert/strict';
+import {cameraWorkspace} from '../browser/studio.mjs';
 import {readFileSync} from 'node:fs';
 import {homedir} from 'node:os';
 import {chromium} from '@playwright/test';
@@ -8,10 +9,10 @@ const credentials=JSON.parse(readFileSync(homedir()+'/.config/vqec-vision/ai-can
 const browser=await chromium.launch({headless:true,
   ...(process.env.PLAYWRIGHT_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_EXECUTABLE_PATH}:{}),
   args:['--ignore-certificate-errors']});
-const page=await browser.newPage({ignoreHTTPSErrors:true,viewport:{width:1600,height:1000}});
+let page=await browser.newPage({ignoreHTTPSErrors:true,viewport:{width:1600,height:1000}});
 let access;
 try {
-  await page.goto(base);
+  const connection=await cameraWorkspace(page,credentials,base);page=connection.page;access=connection.access;
   await page.locator('.react-flow__node').nth(3).waitFor();
   await page.getByRole('button',{name:'Edit rule',exact:true}).click();
   await page.getByRole('button',{name:'Configure Highlight',exact:true}).click();
@@ -33,13 +34,6 @@ try {
   await color.fill('#00aa99');
   await page.getByRole('button',{name:'Save',exact:true}).click();
   await page.getByRole('status').filter({hasText:'Draft and scene saved'}).waitFor();
-  await page.getByRole('button',{name:'Camera source',exact:true}).click();
-  await page.getByRole('textbox',{name:'Camera username'}).fill(credentials.username);
-  await page.getByLabel('Camera password',{exact:true}).fill(credentials.password);
-  const login=page.waitForResponse(r=>r.request().method()==='POST' && new URL(r.url()).pathname==='/api/v1/auth/login');
-  await page.getByRole('button',{name:'Connect board AI',exact:true}).click();
-  const response=await login;assert.equal(response.status(),200);access=(await response.json()).details.accessToken;
-  await page.keyboard.press('Escape');
   await page.waitForFunction(()=>{
     const v=document.querySelector('video.live-video');
     return v?.videoWidth===2560 && v.videoHeight===1440 && v.getVideoPlaybackQuality().totalVideoFrames>=100;

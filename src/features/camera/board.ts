@@ -1,5 +1,6 @@
 import { setRuntimeAccess } from "@/features/runtime/store";
 import type { WhepSource } from "@/hooks/useWhep";
+import { requestCameraSession } from './bridge';
 interface Envelope<T> {
   details: T;
 }
@@ -18,6 +19,7 @@ async function request<T>(
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     signal: AbortSignal.timeout(12000),
   });
+  if (response.status === 401 && token) requestCameraSession('refresh');
   if (!response.ok)
     throw new Error(
       `Camera API: HTTP ${response.status}. ${response.status === 401 ? "Check the existing camera account." : response.status === 429 ? "Session limit reached. Close an existing viewer and retry." : response.status === 503 ? "AI stream is not ready yet." : "Check camera service availability."}`,
@@ -38,36 +40,9 @@ export async function connectBoard(
       throw new Error(
         "Complete account setup in the existing camera web UI first.",
       );
-    const cameras = await request<{ items: { id: string; name: string }[] }>(
-      "/api/v1/cameras",
-      "GET",
-      undefined,
-      session.accessToken,
-    );
-    const camera = cameras.items[0];
-    if (!camera) throw new Error("No camera is available.");
-    const media = await request<{
-      whepUrl: string;
-      mediaToken: string;
-      streamType: string;
-      aiEnabled: boolean;
-    }>(
-      `/api/v1/cameras/${camera.id}/live-stream?streamType=AI`,
-      "GET",
-      undefined,
-      session.accessToken,
-    );
-    const url = new URL(media.whepUrl, location.origin);
-    if (media.streamType !== "AI" || url.origin !== location.origin)
-      throw new Error("Camera did not return a local AI stream.");
+    const source = await connectBoardWithAccess(session.accessToken);
     setRuntimeAccess(session.accessToken);
-    return {
-      url: url.href,
-      token: media.mediaToken,
-      sessionAccess: session.accessToken,
-      sessionRefresh: session.refreshToken,
-      cameraName: camera.name,
-    };
+    return { ...source, sessionAccess: session.accessToken, sessionRefresh: session.refreshToken };
   } catch (error) {
     await fetch("/api/v1/auth/logout", {
       method: "POST",
@@ -79,4 +54,37 @@ export async function connectBoard(
     }).catch(() => {});
     throw error;
   }
+}
+
+export async function connectBoardWithAccess(access: string): Promise<WhepSource> {
+  const cameras = await request<{ items: { id: string; name: string }[] }>(
+    "/api/v1/cameras",
+    "GET",
+    undefined,
+    access,
+  );
+  const camera = cameras.items[0];
+  if (!camera) throw new Error("No camera is available.");
+  const media = await request<{
+    whepUrl: string;
+    mediaToken: string;
+    streamType: string;
+    aiEnabled: boolean;
+    sessionId?: string;
+  }>(
+    `/api/v1/cameras/${camera.id}/live-stream?streamType=AI`,
+    "GET",
+    undefined,
+    access,
+  );
+  const url = new URL(media.whepUrl, location.origin);
+  if (media.streamType !== "AI" || url.origin !== location.origin)
+    throw new Error("Camera did not return a local AI stream.");
+  return {
+    url: url.href,
+    token: media.mediaToken,
+    autoReconnect: true,
+    cameraName: camera.name,
+    resource: media.sessionId ? new URL(`/api/v1/media/sessions/${media.sessionId}`, location.origin).href : undefined,
+  };
 }

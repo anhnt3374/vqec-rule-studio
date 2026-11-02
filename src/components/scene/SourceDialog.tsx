@@ -11,12 +11,14 @@ export function SourceDialog({
   connect,
   disconnect,
   editable,
+  boardAvailable, boardStatus, reconnect,
 }: {
   open: boolean;
   onClose: () => void;
   connect: (source: WhepSource) => void;
   disconnect: () => void;
   editable: boolean;
+  boardAvailable: boolean; boardStatus: string; reconnect: () => void;
 }) {
   const s = useStudio(),
     file = useRef<HTMLInputElement>(null),
@@ -80,10 +82,7 @@ export function SourceDialog({
     >
       <div className="space-y-4">
         <BoardSource
-          connect={(source) => {
-            connect(source);
-            onClose();
-          }}
+          available={boardAvailable} status={boardStatus} reconnect={reconnect}
         />
         <div className="source-section">
           <span className="eyebrow">LOCAL SCENE</span>

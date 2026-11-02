@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import {cameraWorkspace} from "../browser/studio.mjs";
 import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { chromium } from "@playwright/test";
@@ -16,7 +17,7 @@ const browser = await chromium.launch({
     : {}),
   args: ["--ignore-certificate-errors"],
 });
-const page = await browser.newPage({
+let page = await browser.newPage({
   ignoreHTTPSErrors: true,
   viewport: { width: 1600, height: 1000 },
 });
@@ -24,7 +25,7 @@ let access;
 const errors = [];
 page.on("pageerror", (error) => errors.push(error.message));
 try {
-  await page.goto(base);
+  const connection=await cameraWorkspace(page,credentials,base);page=connection.page;access=connection.access;
   await page.locator(".workspace > .column").nth(2).waitFor();
   const columns = await page
     .locator(".workspace > .column")
@@ -39,32 +40,7 @@ try {
   assert.match(columns[2].classes, /scene-column/);
   assert.ok(columns[0].x < columns[1].x && columns[1].x < columns[2].x);
   assert.equal(await page.locator(".react-flow__node").count(), 4);
-  await page
-    .getByRole("button", { name: "Camera source", exact: true })
-    .click();
-  await page
-    .getByRole("textbox", { name: "Camera username" })
-    .fill(credentials.username);
-  await page
-    .getByLabel("Camera password", { exact: true })
-    .fill(credentials.password);
-  const login = page.waitForResponse(
-    (r) =>
-      r.request().method() === "POST" &&
-      new URL(r.url()).pathname === "/api/v1/auth/login",
-  );
-  const runtime = page.waitForResponse(
-    (r) =>
-      r.request().method() === "GET" &&
-      new URL(r.url()).pathname === "/studio-api/v1/rules/attendance",
-  );
-  await page
-    .getByRole("button", { name: "Connect board AI", exact: true })
-    .click();
-  const logged = await login;
-  assert.equal(logged.status(), 200);
-  access = (await logged.json()).details.accessToken;
-  const initialResponse = await runtime;
+  const initialResponse=await page.request.get(base+"/studio-api/v1/rules/attendance",{headers:{Authorization:"Bearer "+access}});
   assert.equal(initialResponse.status(), 200);
   const initial = (await initialResponse.json()).details;
   assert.equal(initial.available, true);

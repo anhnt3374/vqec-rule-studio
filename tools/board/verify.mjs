@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import {cameraWorkspace} from "../browser/studio.mjs";
 import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { chromium } from "@playwright/test";
@@ -13,58 +14,23 @@ const browser = await chromium.launch({
   headless: true,
   args: ["--ignore-certificate-errors"],
 });
-const page = await browser.newPage({
+let page = await browser.newPage({
   ignoreHTTPSErrors: true,
   viewport: { width: 1600, height: 1000 },
 });
+let access;
 const errors = [];
 page.on("pageerror", (error) => errors.push(error.message));
 try {
-  await page.goto(base);
+  const connection=await cameraWorkspace(page,credentials,base);page=connection.page;access=connection.access;
   assert.equal(await page.locator("html").getAttribute("class"), "light");
-  await page
-    .getByRole("button", { name: "Camera source", exact: true })
-    .click();
-  await page
-    .getByRole("textbox", { name: "Camera username" })
-    .fill(credentials.username);
-  await page
-    .getByLabel("Camera password", { exact: true })
-    .fill(credentials.password);
-  const login = page.waitForResponse(
-    (r) =>
-      r.request().method() === "POST" &&
-      new URL(r.url()).pathname === "/api/v1/auth/login",
-  );
-  const metadata = page
-    .waitForResponse(
-      (r) =>
-        r.request().method() === "GET" &&
-        r.url().includes("live-stream?streamType=AI"),
-    )
-    .catch(() => null);
-  const offer = page
-    .waitForResponse(
-      (r) =>
-        r.request().method() === "POST" &&
-        new URL(r.url()).pathname === "/api/v1/media/ai/whep",
-    )
-    .catch(() => null);
-  await page
-    .getByRole("button", { name: "Connect board AI", exact: true })
-    .click();
-  assert.equal(
-    (await login).status(),
-    200,
-    "Existing camera login failed; inspect session limit/account without retrying",
-  );
-  const metadataResponse = await metadata;
+  const metadataResponse=connection.metadata;
   assert.ok(metadataResponse, "AI metadata was not returned");
   const details = (await metadataResponse.json()).details;
   assert.equal(details.streamType, "AI");
   assert.equal(details.aiEnabled, true);
   assert.equal(details.overlayEnabled, true);
-  const offerResponse = await offer;
+  const offerResponse = connection.offer;
   assert.ok(offerResponse, "WHEP offer did not return");
   assert.equal(offerResponse.status(), 201);
   await page.waitForFunction(
@@ -178,5 +144,6 @@ try {
     });
     if (await disconnect.isVisible()) await disconnect.click();
   } catch {}
+  if(access)await page.request.post(base+"/api/v1/auth/logout",{headers:{Authorization:"Bearer "+access},data:{}});
   await browser.close();
 }

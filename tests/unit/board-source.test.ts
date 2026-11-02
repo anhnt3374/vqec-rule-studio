@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { connectBoard } from "@/features/camera/board";
+import { connectBoard, connectBoardWithAccess } from "@/features/camera/board";
 afterEach(() => vi.unstubAllGlobals());
 const reply = (details: unknown, status = 200) =>
   Promise.resolve(
@@ -34,6 +34,17 @@ describe("existing board API integration", () => {
     expect(source.token).toBe("media");
     expect(source.sessionAccess).toBe("access");
     expect(fetch.mock.calls[2][0]).toContain("streamType=AI");
+  });
+  it("borrows camera access without login/logout or owning its session", async () => {
+    vi.stubGlobal("location", {origin:"https://board:8444"});
+    const fetch=vi.fn().mockImplementationOnce(()=>reply({items:[{id:"camera-id",name:"Board"}]}))
+      .mockImplementationOnce(()=>reply({whepUrl:"/api/v1/media/ai/whep",mediaToken:"media",streamType:"AI",sessionId:"resource"}));
+    vi.stubGlobal("fetch",fetch);
+    const source=await connectBoardWithAccess("parent-access");
+    expect(source.sessionAccess).toBeUndefined(); expect(source.sessionRefresh).toBeUndefined();
+    expect(source.resource).toBe("https://board:8444/api/v1/media/sessions/resource");
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(fetch.mock.calls[0][1].headers.Authorization).toBe("Bearer parent-access");
   });
   it("logs out its own session if metadata discovery fails", async () => {
     const fetch = vi

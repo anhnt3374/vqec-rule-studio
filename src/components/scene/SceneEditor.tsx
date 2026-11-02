@@ -10,7 +10,8 @@ import {
 import { useStudio } from "@/stores/studio";
 import { Button } from "@/components/ui/button";
 import { useSceneDrawing } from "@/hooks/useSceneDrawing";
-import { useWhep, type WhepSource } from "@/hooks/useWhep";
+import { useWhep } from "@/hooks/useWhep";
+import { useBoardConnection } from "@/hooks/useBoardConnection";
 import { SceneOverlay, type SceneFilters } from "./SceneOverlay";
 import { SceneTools } from "./SceneTools";
 import { SceneObjects } from "./SceneObjects";
@@ -28,8 +29,8 @@ export function SceneEditor() {
     [objects, setObjects] = useState(false),
     [expanded, setExpanded] = useState(false),
     [sourceOpen, setSourceOpen] = useState(false),
-    [source, setSource] = useState<WhepSource | null>(null),
     [liveRatio, setLiveRatio] = useState(16 / 9);
+  const {source, setSource, available, boardStatus, reconnect} = useBoardConnection();
   const { stream, status } = useWhep(source),
     container = useRef<HTMLDivElement>(null),
     video = useRef<HTMLVideoElement>(null),
@@ -202,13 +203,16 @@ export function SceneEditor() {
       <footer className="scene-footer">
         <span>
           <Radio size={12} />
-          {status}
+          {source ? status : available ? boardStatus : status}
         </span>
         <span>
           {source ? "WHEP" : "LOCAL"} · {drawing.editable ? "EDIT" : "VIEW"}
         </span>
       </footer>
       <SourceDialog
+        boardAvailable={available}
+        boardStatus={boardStatus}
+        reconnect={reconnect}
         open={sourceOpen}
         onClose={() => setSourceOpen(false)}
         connect={setSource}
