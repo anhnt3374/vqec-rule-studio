@@ -67,3 +67,18 @@ gap/empty/generation/revision resets, malformed IPC and idle-peer shutdown. With
 `STUDIO_CAMERA_TEST` set, the same suite checks the actual C camera adapter,
 32-event durable outbox and backend-absent behavior. Fixtures are synthetic;
 they do not establish person tracking/counting accuracy or live video latency.
+
+Deployed02/11 on QRB142 as `studio.e0fb793f8c6f` (code918ce17), with camera
+adapter93f4c89897c3. Native ARM fixtures passed on board (six tests, source-hash
+test host-only). Both native/gateway units and camera media/API are active with
+zero automatic restarts. Restarting only the native owner restored migrated gate
+version1 without changing the camera PID; DB quick_check passed. Gateway requires
+auth401, blocks the old Studio proxy403, rejects invalid Publish422.
+
+Real Chromium156: AI2560x1440,100frames/37dropped plus150frames/54dropped;
+same-geometry Publish acknowledged activeVersion2 and DB stored version2. No
+browser errors; test session logged out. Native snapshot2287batches/invalid0,
+initial gap1/crossings0, evaluation10us/max538us. No live crossing/counting accuracy,
+IPC end-to-end percentile, smoothness or soak claim. Source/engine sockets may
+briefly be absent after systemd Type=simple reports active; clients must use
+application readiness rather than treating that unit state as an activation ACK.
