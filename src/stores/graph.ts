@@ -111,6 +111,8 @@ export const graphEditor: StudioSlice<
             ...node.data.config,
             ...(node.data.kind === "gate"
               ? { spatialId: config.spatialId, direction: config.direction }
+              : node.data.kind === "highlight"
+                ? { highlightColor: config.highlightColor, highlightEnabled: config.highlightEnabled }
               : node.data.kind === "zone"
                 ? { spatialId: config.spatialId }
                 : {}),

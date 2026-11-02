@@ -62,7 +62,7 @@ export function Navigation() {
       <div className="nav-body">
         <div className="section-label">
           {selected ? "OPERATOR LIBRARY" : "YOUR RULES"}
-          <span>{selected ? "15" : s.rules.length}</span>
+          <span>{selected ? "16" : s.rules.length}</span>
         </div>
         <label className="search">
           <Search size={15} />

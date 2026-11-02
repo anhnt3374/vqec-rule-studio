@@ -14,14 +14,14 @@ test('attendance graph shows backend counts and waits for activation ACK', async
   await page.route('**/api/v1/media/ai/whep',route=>route.fulfill({status:503,body:'No video in UI contract test'}));
   await page.route('**/studio-api/v1/rules/attendance',route=>{
     if(route.request().method()==='PUT') {
-      expect(route.request().postDataJSON()).toMatchObject({kind:'attendance',direction:1});
+      expect(route.request().postDataJSON()).toMatchObject({kind:'attendance',direction:1,highlight:{enabled:true,color:'#12abef',lifetime:'track'}});
       ++version;
       return route.fulfill({status:202,json:{details:{...status(),activeVersion:version-1,pendingVersion:version}}});
     }
     return route.fulfill({json:{details:status()}});
   });
   await page.goto('/');
-  await expect(page.locator('.react-flow__node')).toHaveCount(3);
+  await expect(page.locator('.react-flow__node')).toHaveCount(4);
   const category=page.locator('.react-flow__node').filter({hasText:'Object Category'});
   const gate=page.locator('.react-flow__node').filter({hasText:'Gate Crossing'});
   expect((await category.boundingBox())!.y).toBeLessThan((await gate.boundingBox())!.y);
@@ -32,7 +32,28 @@ test('attendance graph shows backend counts and waits for activation ACK', async
   await expect(page.locator('.react-flow__edge-text')).toContainText(['3 now','7 crossings']);
   await page.keyboard.press('Escape');
   await page.getByRole('button',{name:'Edit rule',exact:true}).click();
+  await page.getByRole('button',{name:'Configure Highlight',exact:true}).click();
+  await page.getByLabel('Highlight color',{exact:true}).fill('#12abef');
   await page.getByRole('button',{name:'Publish',exact:true}).click();
   await expect(page.locator('.runtime-panel')).toContainText('Active v2');
   await expect(page.getByRole('status')).toContainText('Applied on device');
+});
+
+test('Highlight is selectable from the operator library and its config survives draft save', async ({page})=>{
+  await page.goto('/');
+  await page.getByRole('button',{name:'Back to rules'}).click();
+  await page.getByRole('button',{name:/Restricted Area Alert/}).first().click();
+  await page.getByRole('button',{name:'Edit rule',exact:true}).click();
+  await page.locator('.operator-item').filter({hasText:'Draw selected tracks using a configured color'}).click();
+  await expect(page.locator('.react-flow__node')).toHaveCount(4);
+  await page.getByRole('button',{name:'Configure Highlight',exact:true}).click();
+  await page.getByLabel('Highlight color',{exact:true}).fill('#00aa99');
+  await page.getByRole('checkbox',{name:'Enable Highlight',exact:true}).uncheck();
+  await page.getByRole('button',{name:'Save',exact:true}).click();
+  await page.reload();
+  await page.getByRole('button',{name:'Back to rules'}).click();
+  await page.getByRole('button',{name:/Restricted Area Alert/}).first().click();
+  await page.getByRole('button',{name:'Configure Highlight',exact:true}).click();
+  await expect(page.getByLabel('Highlight color',{exact:true})).toHaveValue('#00aa99');
+  await expect(page.getByRole('checkbox',{name:'Enable Highlight',exact:true})).not.toBeChecked();
 });

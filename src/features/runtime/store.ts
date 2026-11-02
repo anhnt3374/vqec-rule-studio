@@ -4,9 +4,10 @@ import type { Rule, CameraScene } from '@/models/types';
 export interface RuntimeStatus {
   activeVersion:number; pendingVersion:number; engineEpoch:string; available:boolean;
   line:{x1:number;y1:number;x2:number;y2:number;direction:number};
-  categoryCount:number; crossingCount:number; eventAccepted:number; eventPersisted:number; eventFailed:number; eventPending:number; eventDelivered:number; deliveryBlocked:number;
-  processed:number; dropped:number; gaps:number; invalid:number; queueHigh:number;
-  latencyUs:{evaluate:number;evaluateMax:number;total:number;totalMax:number;p99Upper:number};
+  highlight?:{enabled:boolean;color:string;lifetime:'track'};
+  categoryCount:number; crossingCount:number;
+  processed:number; gaps:number; invalid:number;
+  latencyUs:{evaluate:number;evaluateMax:number};
   events:{sequence:number;trackId:string;frameId:number;version:number}[];
 }
 export const useRuntime = create<{access:string|null;status:RuntimeStatus|null;error:string;publishing:boolean}>(()=>({

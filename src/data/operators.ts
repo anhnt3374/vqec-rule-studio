@@ -26,7 +26,7 @@ const groups = {
     ["within", "Within", "Configure a time window"],
     ["sequence", "Sequence", "Describe ordered inputs"],
   ],
-  Output: [["event", "Trigger Event", "Define an output configuration"]],
+  Output: [["highlight", "Highlight", "Draw selected tracks using a configured color"], ["event", "Trigger Event", "Define an output configuration"]],
 } as const;
 const colors = {
   Spatial: "#36b8ef",
@@ -75,6 +75,7 @@ export function makeNode(
         ...(definition(kind).category === "Time"
           ? { seconds: 30, schedule: "Mon–Fri 09:00–18:00" }
           : {}),
+        ...(kind === "highlight" ? { highlightColor: "#ff0000", highlightEnabled: true } : {}),
         ...(kind === "event" ? { eventName: "", eventType: "Custom" } : {}),
       },
     },

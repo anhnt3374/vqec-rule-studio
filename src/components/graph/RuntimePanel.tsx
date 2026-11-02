@@ -18,6 +18,7 @@ export function RuntimePanel() {
     {status && <><div className="runtime-metrics">
       <span><b>{status.categoryCount}</b> persons now</span>
       <span><b>{status.crossingCount}</b> crossings</span>
+      {status.highlight && <span>Active Highlight: {status.highlight.enabled ? status.highlight.color : 'disabled'}</span>}
       <span>Event delivery is owned by the camera action service</span>
       <span>input gaps {status.gaps} · invalid {status.invalid}</span>
     </div><div className="runtime-events">{[...status.events].reverse().slice(0,3).map(e=><span key={e.sequence}>

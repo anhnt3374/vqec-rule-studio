@@ -36,6 +36,8 @@ export function nodeErrors(node: OperatorNode, scene: CameraScene): string[] {
     errors.push(`${label}: duration must be positive.`);
   if (kind === "schedule" && !config.schedule?.trim())
     errors.push(`${label}: schedule is required.`);
+  if (kind === "highlight" && !/^#[0-9a-f]{6}$/i.test(config.highlightColor ?? ""))
+    errors.push(`${label}: choose a six-digit RGB color.`);
   return errors;
 }
 export function validateRule(

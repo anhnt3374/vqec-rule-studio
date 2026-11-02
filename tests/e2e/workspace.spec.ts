@@ -164,7 +164,7 @@ test("Attendance locked and shared object deletion blocked", async ({
   await expect(
     page.getByRole("button", { name: "Draw Gate", exact: true }),
   ).toBeDisabled();
-  await expect(page.locator(".react-flow__node")).toHaveCount(3);
+  await expect(page.locator(".react-flow__node")).toHaveCount(4);
   await page
     .getByRole("button", { name: "Configure Gate Crossing", exact: true })
     .click();

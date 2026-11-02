@@ -15,7 +15,8 @@ export type OperatorKind =
   | "duration"
   | "within"
   | "sequence"
-  | "event";
+  | "event"
+  | "highlight";
 export interface Point {
   x: number;
   y: number;
@@ -56,6 +57,8 @@ export interface OperatorConfig {
   eventName?: string;
   eventType?: string;
   description?: string;
+  highlightColor?: string;
+  highlightEnabled?: boolean;
 }
 export interface OperatorData extends Record<string, unknown> {
   kind: OperatorKind;

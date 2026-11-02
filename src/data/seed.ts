@@ -1,4 +1,5 @@
 import type { CameraScene, Rule } from "@/models/types";
+import { normalizeSystemAttendance } from "../features/runtime/attendance";
 import { makeNode } from "./operators";
 export function seed() {
   const scene: CameraScene = {
@@ -95,5 +96,5 @@ export function seed() {
       },
     };
   });
-  return { scene, rules };
+  return { scene, rules: rules.map(normalizeSystemAttendance) };
 }

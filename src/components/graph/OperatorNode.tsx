@@ -31,13 +31,15 @@ export function OperatorNode({
           ? data.kind === "schedule"
             ? data.config.schedule
             : `${data.config.seconds ?? 0} seconds`
+          : data.kind === "highlight"
+            ? `${data.config.highlightEnabled === false ? "Disabled" : data.config.highlightColor ?? "#ff0000"} · until track ends`
           : data.kind === "event"
             ? data.config.eventName || "Configure an event"
             : def.description;
   return (
     <div
       className={`operator-node ${selected ? "is-selected" : ""} ${objectId && objectId === data.config.spatialId ? "is-linked" : ""}`}
-      style={{ "--node-color": def.color } as React.CSSProperties}
+      style={{ "--node-color": data.kind==='highlight' ? data.config.highlightColor ?? def.color : def.color } as React.CSSProperties}
     >
       {def.input && <Handle id="in" type="target" position={Position.Top} />}
       <div className="node-top">

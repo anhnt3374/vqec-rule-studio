@@ -14,6 +14,7 @@ import {
   Hourglass,
   ListOrdered,
   Zap,
+  Highlighter,
 } from "lucide-react";
 import type { OperatorKind } from "@/models/types";
 const icons = {
@@ -32,6 +33,7 @@ const icons = {
   within: Hourglass,
   sequence: ListOrdered,
   event: Zap,
+  highlight: Highlighter,
 };
 export function OperatorIcon({
   kind,

@@ -190,8 +190,13 @@ describe("spatial references and restrictions", () => {
       direction: "Negative",
       mode: "Exit",
     });
+    const highlight=graph.nodes.find(n=>n.data.kind==='highlight')!;
+    studio().config(highlight.id,{name:'Cannot rename',highlightColor:'#12abef',highlightEnabled:false});
+    expect(studio().active!.graph.nodes.find(n=>n.id===highlight.id)!.data.config).toEqual({
+      ...highlight.data.config,highlightColor:'#12abef',highlightEnabled:false,
+    });
     expect(studio().active!.name).toBe("Attendance");
-    expect(studio().active!.graph.nodes).toHaveLength(3);
+    expect(studio().active!.graph.nodes).toHaveLength(4);
     expect(studio().active!.graph.edges).toEqual(graph.edges);
     expect(studio().active!.graph.nodes.find(n=>n.data.kind==="gate")!.data.config).toEqual({
       ...node.data.config,

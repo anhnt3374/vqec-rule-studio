@@ -38,7 +38,7 @@ try {
   assert.match(columns[1].classes, /graph-column/);
   assert.match(columns[2].classes, /scene-column/);
   assert.ok(columns[0].x < columns[1].x && columns[1].x < columns[2].x);
-  assert.equal(await page.locator(".react-flow__node").count(), 3);
+  assert.equal(await page.locator(".react-flow__node").count(), 4);
   await page
     .getByRole("button", { name: "Camera source", exact: true })
     .click();

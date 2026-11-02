@@ -1,3 +1,4 @@
+import { HighlightConfiguration } from "./HighlightConfiguration";
 import { X, LocateFixed, LockKeyhole } from "lucide-react";
 import { useStudio } from "@/stores/studio";
 import { definition } from "@/data/operators";
@@ -205,6 +206,7 @@ export function Configuration() {
               />
             </label>
           ))}
+        {kind === "highlight" && <HighlightConfiguration config={config} locked={locked} change={change} />}
         {kind === "event" && (
           <>
             <label className="field">
@@ -259,7 +261,7 @@ export function Configuration() {
           {system ? (
             <>
               <LockKeyhole size={12} />
-              System template · only spatial reference and gate direction can
+              System template · spatial reference, gate direction and Highlight can
               change.
             </>
           ) : locked ? (
