@@ -99,3 +99,18 @@ initial gap1/crossings0, evaluation10us/max538us. No live crossing/counting accu
 IPC end-to-end percentile, smoothness or soak claim. Source/engine sockets may
 briefly be absent after systemd Type=simple reports active; clients must use
 application readiness rather than treating that unit state as an activation ACK.
+
+
+Highlight deployed02/11: `studio.ecf7c609c10f`, codea548c09, paired camera
+adapter1925d8260733. Native ARM suite nine pass/one host-only wire-source skip;
+real C2D probe verified #123abc and #e02080 with32total upload bytes and cache
+reuse. Camera's operator-selected diagonal gate/version3 was preserved exactly.
+Legacy config remains Highlight-disabled until Publish of the new template.
+Pre-migration DB backup retained version3/schema7 and quick_check passed.
+
+`node tools/board/verify-highlight.mjs` verified actual8444 operator selection,
+configuration and draft persistence across reload, plus AI2560x1440 playback
+(102frames/38headless drops). It waits for the Save completion notice before
+reload and never publishes/replaces the operator's active geometry. All owned
+sessions were logged out. Four units active with zero automatic restarts;
+physical-person Highlight acceptance and counting accuracy remain unverified.
